@@ -8,8 +8,6 @@ import com.github.gmarcg00.spotify.external.api.mapper.ArtistMapper;
 import com.github.gmarcg00.spotify.external.api.model.response.artist.ArtistResponse;
 import com.github.gmarcg00.spotify.service.ArtistService;
 
-import java.util.List;
-
 
 /**
  * @author Guillermo Marcos García

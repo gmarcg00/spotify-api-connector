@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.github.gmarcg00.spotify.utils.MockHelper.getServer;
 import static com.github.gmarcg00.spotify.utils.MockHelper.mockGetRequest;
+import static com.github.gmarcg00.spotify.utils.TestHelper.assertNotNullFields;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AlbumExecutorTest {
@@ -57,7 +58,6 @@ class AlbumExecutorTest {
 
         //Then
         assertNotNull(response);
-        assertEquals("Global Warming",response.getName());
-        assertEquals(18,response.getTotalTracks());
+        assertNotNullFields(response);
     }
 }

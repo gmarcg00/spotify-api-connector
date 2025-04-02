@@ -14,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 public class TrackResponse {
-
     private Album album;
     private List<Artist> artists;
     @JsonProperty(value = "available_markets")

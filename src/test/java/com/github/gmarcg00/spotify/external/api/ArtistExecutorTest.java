@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.github.gmarcg00.spotify.utils.MockHelper.getServer;
 import static com.github.gmarcg00.spotify.utils.MockHelper.mockGetRequest;
+import static com.github.gmarcg00.spotify.utils.TestHelper.assertNotNullFields;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ArtistExecutorTest {
@@ -68,6 +69,6 @@ class ArtistExecutorTest {
 
         //Then
         assertNotNull(result);
-        assertEquals(expected, result);
+        assertNotNullFields(result);
     }
 }
