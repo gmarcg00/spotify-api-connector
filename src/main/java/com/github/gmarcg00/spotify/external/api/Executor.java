@@ -32,8 +32,8 @@ public class Executor<T> {
         this.path = path;
     }
 
-    public T get(String id, String market, String token, Class<T> type) throws EntityNotFoundException, UnauthorizedException {
-        HttpRequest request = createGetRequest(createPath(id,market),token);
+    public T get(String id, String token, Class<T> type) throws EntityNotFoundException, UnauthorizedException {
+        HttpRequest request = createGetRequest(String.join("/",path, id),token);
         HttpResponse<T> response = doGet(request,new JsonObjectBodyHandler<>(type));
         checkResponse(response,id);
         return response.body();
@@ -45,11 +45,6 @@ public class Executor<T> {
                 .header(AUTHORIZATION_HEADER, BEARER_PREFIX + token)
                 .GET()
                 .build();
-    }
-
-    private String createPath(String id, String market) {
-        String basePath = String.join("/",path, id);
-        return (market != null && !market.isEmpty()) ? basePath + "?market=" + market : basePath;
     }
 
     private HttpResponse<T> doGet(HttpRequest request, AbstractJsonBodyHandler<T> bodyHandler){

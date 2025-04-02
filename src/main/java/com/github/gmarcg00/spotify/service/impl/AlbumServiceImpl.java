@@ -22,8 +22,8 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public Album getAlbum(String id, String market, String token) throws EntityNotFoundException, UnauthorizedException {
-        AlbumResponse responseModel = executor.get(id,market,token, AlbumResponse.class);
+    public Album getAlbum(String id, String token) throws EntityNotFoundException, UnauthorizedException {
+        AlbumResponse responseModel = executor.get(id,token,AlbumResponse.class);
         return AlbumMapper.toEntity(responseModel);
     }
 }

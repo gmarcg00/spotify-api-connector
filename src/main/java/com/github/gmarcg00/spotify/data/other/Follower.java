@@ -1,4 +1,4 @@
-package com.github.gmarcg00.spotify.data.artist;
+package com.github.gmarcg00.spotify.data.other;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

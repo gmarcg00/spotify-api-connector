@@ -1,7 +1,10 @@
 package com.github.gmarcg00.spotify;
 
 import com.github.gmarcg00.spotify.data.*;
-import com.github.gmarcg00.spotify.data.artist.Follower;
+import com.github.gmarcg00.spotify.data.other.Copyright;
+import com.github.gmarcg00.spotify.data.other.ExternalUrl;
+import com.github.gmarcg00.spotify.data.other.Follower;
+import com.github.gmarcg00.spotify.data.other.Image;
 import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.artist.ArtistResponse;
 

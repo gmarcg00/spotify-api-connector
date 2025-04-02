@@ -1,9 +1,9 @@
 package com.github.gmarcg00.spotify.external.api.model.response.artist;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.github.gmarcg00.spotify.data.ExternalUrl;
-import com.github.gmarcg00.spotify.data.Image;
-import com.github.gmarcg00.spotify.data.artist.Follower;
+import com.github.gmarcg00.spotify.data.other.ExternalUrl;
+import com.github.gmarcg00.spotify.data.other.Image;
+import com.github.gmarcg00.spotify.data.other.Follower;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

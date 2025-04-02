@@ -43,7 +43,7 @@ class ArtistExecutorTest {
         mockGetRequest("/artists/4aawyAB9vmqN3uQ7FjRGTy",401,"artist/get_artist_without_permissions.json");
 
         //When && Then
-        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> artistExecutor.get("4aawyAB9vmqN3uQ7FjRGTy","","expired", ArtistResponse.class));
+        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> artistExecutor.get("4aawyAB9vmqN3uQ7FjRGTy","expired", ArtistResponse.class));
         assertEquals("INVALID_ACCESS_TOKEN",exception.getMessage());
     }
 
@@ -53,7 +53,7 @@ class ArtistExecutorTest {
         mockGetRequest("/artists/4aawyAB9vmqN3uQ7FjRhhh",404,"artist/get_artist_not_found.json");
 
         //When && Then
-        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> artistExecutor.get("4aawyAB9vmqN3uQ7FjRhhh","","token", ArtistResponse.class));
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> artistExecutor.get("4aawyAB9vmqN3uQ7FjRhhh","token", ArtistResponse.class));
         assertEquals("Entity with id: 4aawyAB9vmqN3uQ7FjRhhh not found",exception.getMessage());
     }
 
@@ -64,7 +64,7 @@ class ArtistExecutorTest {
         mockGetRequest("/artists/4aawyAB9vmqN3uQ7FjRGTy",200,"artist/get_artist_successfully.json");
 
         //When
-        ArtistResponse result = artistExecutor.get("4aawyAB9vmqN3uQ7FjRGTy","","token", ArtistResponse.class);
+        ArtistResponse result = artistExecutor.get("4aawyAB9vmqN3uQ7FjRGTy","token", ArtistResponse.class);
 
         //Then
         assertNotNull(result);

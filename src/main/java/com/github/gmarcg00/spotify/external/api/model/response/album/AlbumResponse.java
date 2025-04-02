@@ -2,9 +2,9 @@ package com.github.gmarcg00.spotify.external.api.model.response.album;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.github.gmarcg00.spotify.data.Copyright;
-import com.github.gmarcg00.spotify.data.ExternalUrl;
-import com.github.gmarcg00.spotify.data.Image;
+import com.github.gmarcg00.spotify.data.other.Copyright;
+import com.github.gmarcg00.spotify.data.other.ExternalUrl;
+import com.github.gmarcg00.spotify.data.other.Image;
 import lombok.*;
 
 import java.util.Date;

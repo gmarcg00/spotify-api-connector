@@ -26,13 +26,8 @@ public class ArtistServiceImpl implements ArtistService {
 
     @Override
     public Artist getArtist(String id, String token) throws EntityNotFoundException, UnauthorizedException {
-        ArtistResponse responseModel = executor.get(id,"",token, ArtistResponse.class);
+        ArtistResponse responseModel = executor.get(id,token,ArtistResponse.class);
         return ArtistMapper.toEntity(responseModel);
     }
 
-    @Override
-    public List<Artist> getArtists(String[] ids, String token) throws EntityNotFoundException, UnauthorizedException {
-        List<ArtistResponse> responseModel =  executor.gets(ids,token);
-        return ArtistMapper.toEntityList(responseModel);
-    }
 }
