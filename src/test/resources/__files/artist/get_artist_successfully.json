@@ -1,0 +1,33 @@
+{
+  "external_urls": {
+    "spotify": "https://open.spotify.com/artist/7eLcDZDYHXZCebtQmVFL25"
+  },
+  "followers": {
+    "href": null,
+    "total": 3242935
+  },
+  "genres": [],
+  "href": "https://api.spotify.com/v1/artists/7eLcDZDYHXZCebtQmVFL25",
+  "id": "7eLcDZDYHXZCebtQmVFL25",
+  "images": [
+    {
+      "url": "https://i.scdn.co/image/ab6761610000e5ebf70cb5cef7d3848570900de5",
+      "height": 640,
+      "width": 640
+    },
+    {
+      "url": "https://i.scdn.co/image/ab67616100005174f70cb5cef7d3848570900de5",
+      "height": 320,
+      "width": 320
+    },
+    {
+      "url": "https://i.scdn.co/image/ab6761610000f178f70cb5cef7d3848570900de5",
+      "height": 160,
+      "width": 160
+    }
+  ],
+  "name": "Aitana",
+  "popularity": 76,
+  "type": "artist",
+  "uri": "spotify:artist:7eLcDZDYHXZCebtQmVFL25"
+}
