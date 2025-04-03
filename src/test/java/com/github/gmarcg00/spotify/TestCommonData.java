@@ -56,7 +56,6 @@ public class TestCommonData {
         return AlbumResponse.builder()
                 .albumType("single")
                 .totalTracks(1)
-                .isPlayable(true)
                 .externalUrl(new ExternalUrl("https://open.spotify.com/album/64vx3cUb97lQGlgt8zozWL"))
                 .href("https://api.spotify.com/v1/albums/64vx3cUb97lQGlgt8zozWL?market=ES")
                 .id("64vx3cUb97lQGlgt8zozWL")

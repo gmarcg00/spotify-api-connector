@@ -22,7 +22,7 @@ class ArtistServiceTest {
     private ArtistService service;
 
     @Mock
-    private Executor<ArtistResponse> executor;
+    private Executor executor;
 
     @BeforeEach
     public void setUp(){

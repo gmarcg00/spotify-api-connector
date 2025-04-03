@@ -4,6 +4,8 @@ import com.github.gmarcg00.spotify.data.Track;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 
+import java.util.List;
+
 
 /**
  * @author Guillermo Marcos García
@@ -20,5 +22,16 @@ public interface TrackService {
      * @throws UnauthorizedException if token has expired, is invalid or is empty
      */
     Track getTrack(String id, String token) throws EntityNotFoundException, UnauthorizedException;
+
+    /**
+     * Returns a list of {@link Track Tracks} corresponding to the provided identifiers.
+     *
+     * @param ids an array of track identifiers
+     * @param token access token to retrieve Spotify API data
+     * @return a list of {@link Track Tracks} corresponding to the requested identifiers
+     * @throws EntityNotFoundException if no track is found
+     * @throws UnauthorizedException if the token has expired, is invalid, or is empty
+     */
+    List<Track> getTracks(String[] ids, String token) throws UnauthorizedException, EntityNotFoundException;
 
 }

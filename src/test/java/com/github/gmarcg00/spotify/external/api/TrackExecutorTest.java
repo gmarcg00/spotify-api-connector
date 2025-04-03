@@ -2,6 +2,7 @@ package com.github.gmarcg00.spotify.external.api;
 
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
+import com.github.gmarcg00.spotify.external.api.model.response.track.TrackListResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.track.TrackResponse;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterAll;
@@ -20,7 +21,7 @@ class TrackExecutorTest {
     private static final String URL = "http://localhost:8080/tracks";
 
     private static WireMockServer wireMockServer;
-    private Executor<TrackResponse> trackExecutor;
+    private Executor executor;
 
     @BeforeAll
     static void startWiremock(){
@@ -34,7 +35,8 @@ class TrackExecutorTest {
     }
 
     @BeforeEach
-    void setUp(){trackExecutor = new Executor<>(URL);}
+    void setUp(){
+        executor = new Executor(URL);}
 
     @Test
     void testGetTrackSuccessfully() throws UnauthorizedException, EntityNotFoundException {
@@ -42,7 +44,24 @@ class TrackExecutorTest {
         mockGetRequest("/tracks/1zTzz7nUxA2UxE6NhNTWSF",200,"track/get_track_successfully.json");
 
         //When
-        TrackResponse response = trackExecutor.get("1zTzz7nUxA2UxE6NhNTWSF","token", TrackResponse.class);
+        TrackResponse response = executor.get("1zTzz7nUxA2UxE6NhNTWSF","token", TrackResponse.class);
+
+        //Then
+        assertNotNull(response);
+        assertNotNullFields(response);
+    }
+
+    @Test
+    void testGetTracksSuccessfully() throws UnauthorizedException, EntityNotFoundException {
+        //Given
+        mockGetRequest("/tracks?ids=2HHr7vMPAD2kOL599AvQep,1zTzz7nUxA2UxE6NhNTWSF",200,"track/get_tracks_successfully.json");
+        String[] ids = new String[2];
+        ids[0]="2HHr7vMPAD2kOL599AvQep";
+        ids[1]="1zTzz7nUxA2UxE6NhNTWSF";
+
+
+        //When
+        TrackListResponse response = executor.gets(ids,"token", TrackListResponse.class);
 
         //Then
         assertNotNull(response);

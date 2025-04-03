@@ -24,7 +24,7 @@ class AlbumServiceTest {
     private AlbumService service;
 
     @Mock
-    private Executor<AlbumResponse> executor;
+    private Executor executor;
 
     @BeforeEach
     public void setUp(){

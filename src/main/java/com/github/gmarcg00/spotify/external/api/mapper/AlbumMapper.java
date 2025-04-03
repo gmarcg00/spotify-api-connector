@@ -5,7 +5,6 @@ import com.github.gmarcg00.spotify.data.Artist;
 import com.github.gmarcg00.spotify.data.Track;
 import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumResponse;
 
-
 public class AlbumMapper {
 
     private AlbumMapper(){}
@@ -43,6 +42,19 @@ public class AlbumMapper {
     }
 
     private static Track getTrack(AlbumResponse.Tracks.TrackItem trackItem){
-        return null;
+        return Track.builder()
+                .artists(trackItem.getArtists().stream().map(AlbumMapper::getArtist).toList())
+                .availableMarkets(trackItem.getAvailableMarkets())
+                .discNumber(trackItem.getDiscNumber())
+                .duration(trackItem.getDuration())
+                .explicit(trackItem.isExplicit())
+                .externalUrl(trackItem.getExternalUrl())
+                .href(trackItem.getHref())
+                .id(trackItem.getId())
+                .name(trackItem.getName())
+                .trackNumber(trackItem.getTrackNumber())
+                .type(trackItem.getType())
+                .uri(trackItem.getUri())
+                .build();
     }
 }

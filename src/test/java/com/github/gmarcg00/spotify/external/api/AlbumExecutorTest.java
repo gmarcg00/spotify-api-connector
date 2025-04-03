@@ -2,6 +2,7 @@ package com.github.gmarcg00.spotify.external.api;
 
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
+import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumListResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumResponse;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterAll;
@@ -20,7 +21,7 @@ class AlbumExecutorTest {
     private static final String URL = "http://localhost:8080/albums";
 
     private static WireMockServer wireMockServer;
-    private Executor<AlbumResponse> albumExecutor;
+    private Executor executor;
 
     @BeforeAll
     static void startWiremock(){
@@ -35,7 +36,7 @@ class AlbumExecutorTest {
 
     @BeforeEach
     void setUp(){
-        albumExecutor = new Executor<>(URL);
+        executor = new Executor(URL);
     }
 
     @Test
@@ -44,7 +45,7 @@ class AlbumExecutorTest {
         mockGetRequest("/albums/4aawyAB9vmqN3uQ7FjRGTyA",400,"album/get_album_not_found.json");
 
         //When && Then
-        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> albumExecutor.get("4aawyAB9vmqN3uQ7FjRGTyA","token", AlbumResponse.class));
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> executor.get("4aawyAB9vmqN3uQ7FjRGTyA","token", AlbumResponse.class));
         assertEquals("Entity with id: 4aawyAB9vmqN3uQ7FjRGTyA not found", exception.getMessage());
     }
 
@@ -54,7 +55,23 @@ class AlbumExecutorTest {
         mockGetRequest("/albums/4aawyAB9vmqN3uQ7FjRGTy",200,"album/get_album_successfully.json");
 
         //When
-        AlbumResponse response = albumExecutor.get("4aawyAB9vmqN3uQ7FjRGTy","token", AlbumResponse.class);
+        AlbumResponse response = executor.get("4aawyAB9vmqN3uQ7FjRGTy","token", AlbumResponse.class);
+
+        //Then
+        assertNotNull(response);
+        assertNotNullFields(response);
+    }
+
+    @Test
+    void testGetAlbumsSuccessfully() throws UnauthorizedException, EntityNotFoundException {
+        //Given
+        mockGetRequest("/albums?ids=64vx3cUb97lQGlgt8zozWL,7w1ESFMSHTpxQKlNLda9pt",200,"album/get_albums_successfully.json");
+        String[] ids = new String[2];
+        ids[0]="64vx3cUb97lQGlgt8zozWL";
+        ids[1]="7w1ESFMSHTpxQKlNLda9pt";
+
+        //When
+        AlbumListResponse response = executor.gets(ids,"token", AlbumListResponse.class);
 
         //Then
         assertNotNull(response);
