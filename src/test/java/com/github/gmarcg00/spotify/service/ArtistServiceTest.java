@@ -32,13 +32,13 @@ class ArtistServiceTest {
     @Test
     void testGetArtistSuccessfully() throws UnauthorizedException, EntityNotFoundException {
         //Given
-        when(executor.get("7eLcDZDYHXZCebtQmVFL25","","", ArtistResponse.class)).thenReturn(TestCommonData.getArtistResponse());
+        when(executor.get("7eLcDZDYHXZCebtQmVFL25","", ArtistResponse.class)).thenReturn(TestCommonData.getArtistResponse());
 
         //When
         Artist result = service.getArtist("7eLcDZDYHXZCebtQmVFL25","");
 
         //Then
         assertEquals("Aitana",result.getName());
-        verify(executor,times(1)).get("7eLcDZDYHXZCebtQmVFL25","","", ArtistResponse.class);
+        verify(executor,times(1)).get("7eLcDZDYHXZCebtQmVFL25","", ArtistResponse.class);
     }
 }

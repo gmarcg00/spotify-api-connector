@@ -34,14 +34,13 @@ class AlbumServiceTest {
     @Test
     void testGetAlbumSuccessfully() throws ParseException, UnauthorizedException, EntityNotFoundException {
         //Given
-        when(executor.get("64vx3cUb97lQGlgt8zozWL","","",AlbumResponse.class)).thenReturn(TestCommonData.getAlbumResponse());
+        when(executor.get("64vx3cUb97lQGlgt8zozWL","",AlbumResponse.class)).thenReturn(TestCommonData.getAlbumResponse());
 
         //When
-        Album result = service.getAlbum("64vx3cUb97lQGlgt8zozWL","","");
+        Album result = service.getAlbum("64vx3cUb97lQGlgt8zozWL","");
 
         //Then
         assertEquals("Paris",result.getName());
-        verify(executor,times(1)).get("64vx3cUb97lQGlgt8zozWL","","", AlbumResponse.class);
-
+        verify(executor,times(1)).get("64vx3cUb97lQGlgt8zozWL","", AlbumResponse.class);
     }
 }
