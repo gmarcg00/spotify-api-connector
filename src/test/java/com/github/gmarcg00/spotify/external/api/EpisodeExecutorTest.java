@@ -2,6 +2,7 @@ package com.github.gmarcg00.spotify.external.api;
 
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
+import com.github.gmarcg00.spotify.external.api.model.response.episode.EpisodeListResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.episode.EpisodeResponse;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterAll;
@@ -20,7 +21,7 @@ class EpisodeExecutorTest {
     private static final String URL = "http://localhost:8080/episodes";
 
     private static WireMockServer wireMockServer;
-    private Executor<EpisodeResponse> episodeExecutor;
+    private Executor executor;
 
     @BeforeAll
     static void startWiremock(){
@@ -34,7 +35,8 @@ class EpisodeExecutorTest {
     }
 
     @BeforeEach
-    void setUp(){episodeExecutor = new Executor<>(URL);}
+    void setUp(){
+        executor = new Executor(URL);}
 
     @Test
     void testGetEpisodeSuccessfully() throws UnauthorizedException, EntityNotFoundException {
@@ -42,7 +44,23 @@ class EpisodeExecutorTest {
         mockGetRequest("/episodes/5TrEALrPu0wjmaoUyYmENj",200,"episode/get_episode_successfully.json");
 
         //When
-        EpisodeResponse response = episodeExecutor.get("5TrEALrPu0wjmaoUyYmENj","token", EpisodeResponse.class);
+        EpisodeResponse response = executor.get("5TrEALrPu0wjmaoUyYmENj","token", EpisodeResponse.class);
+
+        //Then
+        assertNotNull(response);
+        assertNotNullFields(response);
+    }
+
+    @Test
+    void testGetEpisodesSuccessfully() throws UnauthorizedException, EntityNotFoundException {
+        //Given
+        mockGetRequest("/episodes?ids=4eIS8RhRNZXUTiyKL04cQK,5TrEALrPu0wjmaoUyYmENj",200,"episode/get_episodes_successfully.json");
+        String [] ids = new String[2];
+        ids[0] = "4eIS8RhRNZXUTiyKL04cQK";
+        ids[1] = "5TrEALrPu0wjmaoUyYmENj";
+
+        //When
+        EpisodeListResponse response = executor.gets(ids,"token",EpisodeListResponse.class);
 
         //Then
         assertNotNull(response);

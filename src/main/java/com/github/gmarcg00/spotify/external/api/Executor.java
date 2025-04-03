@@ -1,15 +1,11 @@
 package com.github.gmarcg00.spotify.external.api;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.gmarcg00.spotify.RequestClient;
-import com.github.gmarcg00.spotify.external.api.model.SpotifyApiErrorResponse;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.InternalServerException;
 import com.github.gmarcg00.spotify.exception.NetworkConnectionException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 import com.github.gmarcg00.spotify.utils.AbstractJsonBodyHandler;
-import com.github.gmarcg00.spotify.utils.GlobalMapper;
-import com.github.gmarcg00.spotify.utils.JsonListBodyHandler;
 import com.github.gmarcg00.spotify.utils.JsonObjectBodyHandler;
 
 import java.io.IOException;
@@ -17,9 +13,8 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
 
-public class Executor<T> {
+public class Executor {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
@@ -32,10 +27,19 @@ public class Executor<T> {
         this.path = path;
     }
 
-    public T get(String id, String token, Class<T> type) throws EntityNotFoundException, UnauthorizedException {
+    public <T> T get(String id, String token, Class<T> responseType) throws UnauthorizedException, EntityNotFoundException {
         HttpRequest request = createGetRequest(String.join("/",path, id),token);
-        HttpResponse<T> response = doGet(request,new JsonObjectBodyHandler<>(type));
+        HttpResponse<T> response = doGet(request,new JsonObjectBodyHandler<>(responseType));
         checkResponse(response,id);
+        return response.body();
+    }
+
+
+    public <T> T gets(String[] ids, String token, Class<T> responseType) throws UnauthorizedException, EntityNotFoundException {
+        String idsParam = String.join(",",ids);
+        HttpRequest request = createGetRequest(path + "?ids=" + idsParam,token);
+        HttpResponse<T> response = doGet(request,new JsonObjectBodyHandler<>(responseType));
+        checkResponse(response,ids[0]);
         return response.body();
     }
 
@@ -47,7 +51,7 @@ public class Executor<T> {
                 .build();
     }
 
-    private HttpResponse<T> doGet(HttpRequest request, AbstractJsonBodyHandler<T> bodyHandler){
+    private <T> HttpResponse<T>  doGet(HttpRequest request, AbstractJsonBodyHandler<T> bodyHandler){
         try {
             return client.getClient().send(request, bodyHandler);
         } catch (IOException e) {
@@ -58,7 +62,7 @@ public class Executor<T> {
         }
     }
 
-    private void checkResponse(HttpResponse<T> response, String id) throws EntityNotFoundException, UnauthorizedException {
+    private <T> void checkResponse(HttpResponse<T> response, String id) throws EntityNotFoundException, UnauthorizedException {
         switch (response.statusCode()){
             case HttpURLConnection.HTTP_UNAUTHORIZED :
                 throw new UnauthorizedException("INVALID_ACCESS_TOKEN");
@@ -68,32 +72,4 @@ public class Executor<T> {
                 break;
         }
     }
-
-    public List<T> gets(String[] ids, String token) throws EntityNotFoundException {
-        String idParam = String.join(",", ids);
-        HttpRequest request = createGetRequest(path + "?ids=" + idParam ,token);
-        HttpResponse<List<T>> response = doGetWithListResponse(request,new JsonListBodyHandler<>(new TypeReference<>() {}));
-        checkResponseList(response);
-        return response.body();
-    }
-
-    private void checkResponseList(HttpResponse<List<T>> response) throws EntityNotFoundException{
-        if(HttpURLConnection.HTTP_BAD_REQUEST == response.statusCode()){
-            SpotifyApiErrorResponse errorResponse = GlobalMapper.getInstance()
-                    .map(response.body().toString(),SpotifyApiErrorResponse.class);
-            throw new EntityNotFoundException(errorResponse.getError().getMessage());
-        }
-    }
-
-    private HttpResponse<List<T>> doGetWithListResponse(HttpRequest request, AbstractJsonBodyHandler<List<T>> bodyHandler) {
-        try {
-            return client.getClient().send(request, bodyHandler);
-        } catch (IOException e) {
-            throw new NetworkConnectionException(e.getMessage());
-        } catch (InterruptedException e){
-            Thread.currentThread().interrupt();
-            throw new InternalServerException(e.getMessage());
-        }
-    }
-
 }

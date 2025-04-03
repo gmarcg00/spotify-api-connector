@@ -1,0 +1,74 @@
+{
+  "artists": [
+    {
+      "external_urls": {
+        "spotify": "https://open.spotify.com/artist/7eLcDZDYHXZCebtQmVFL25"
+      },
+      "followers": {
+        "href": null,
+        "total": 3244365
+      },
+      "genres": [],
+      "href": "https://api.spotify.com/v1/artists/7eLcDZDYHXZCebtQmVFL25",
+      "id": "7eLcDZDYHXZCebtQmVFL25",
+      "images": [
+        {
+          "url": "https://i.scdn.co/image/ab6761610000e5ebf70cb5cef7d3848570900de5",
+          "height": 640,
+          "width": 640
+        },
+        {
+          "url": "https://i.scdn.co/image/ab67616100005174f70cb5cef7d3848570900de5",
+          "height": 320,
+          "width": 320
+        },
+        {
+          "url": "https://i.scdn.co/image/ab6761610000f178f70cb5cef7d3848570900de5",
+          "height": 160,
+          "width": 160
+        }
+      ],
+      "name": "Aitana",
+      "popularity": 76,
+      "type": "artist",
+      "uri": "spotify:artist:7eLcDZDYHXZCebtQmVFL25"
+    },
+    {
+      "external_urls": {
+        "spotify": "https://open.spotify.com/artist/2CIMQHirSU0MQqyYHq0eOx"
+      },
+      "followers": {
+        "href": null,
+        "total": 2853132
+      },
+      "genres": [
+        "edm",
+        "progressive house",
+        "dubstep"
+      ],
+      "href": "https://api.spotify.com/v1/artists/2CIMQHirSU0MQqyYHq0eOx",
+      "id": "2CIMQHirSU0MQqyYHq0eOx",
+      "images": [
+        {
+          "url": "https://i.scdn.co/image/ab6761610000e5eb89ffabe57a25cedeca3309e7",
+          "height": 640,
+          "width": 640
+        },
+        {
+          "url": "https://i.scdn.co/image/ab6761610000517489ffabe57a25cedeca3309e7",
+          "height": 320,
+          "width": 320
+        },
+        {
+          "url": "https://i.scdn.co/image/ab6761610000f17889ffabe57a25cedeca3309e7",
+          "height": 160,
+          "width": 160
+        }
+      ],
+      "name": "deadmau5",
+      "popularity": 68,
+      "type": "artist",
+      "uri": "spotify:artist:2CIMQHirSU0MQqyYHq0eOx"
+    }
+  ]
+}

@@ -5,8 +5,11 @@ import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 import com.github.gmarcg00.spotify.external.api.Executor;
 import com.github.gmarcg00.spotify.external.api.mapper.EpisodeMapper;
+import com.github.gmarcg00.spotify.external.api.model.response.episode.EpisodeListResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.episode.EpisodeResponse;
 import com.github.gmarcg00.spotify.service.EpisodeService;
+
+import java.util.List;
 
 /**
  * @author Guillermo Marcos García
@@ -15,13 +18,21 @@ import com.github.gmarcg00.spotify.service.EpisodeService;
  */
 public class EpisodeServiceImpl implements EpisodeService {
 
-    private final Executor<EpisodeResponse> executor;
+    private final Executor executor;
 
-    public EpisodeServiceImpl(Executor<EpisodeResponse> executor){this.executor = executor;}
+    public EpisodeServiceImpl(Executor executor){this.executor = executor;}
 
     @Override
     public Episode getEpisode(String id, String token) throws EntityNotFoundException, UnauthorizedException {
-        EpisodeResponse responseModel = executor.get(id,token, EpisodeResponse.class);
-        return EpisodeMapper.toEntity(responseModel);
+        EpisodeResponse response = executor.get(id,token, EpisodeResponse.class);
+        return EpisodeMapper.toEntity(response);
+    }
+
+    @Override
+    public List<Episode> getEpisodes(String[] ids, String token) throws EntityNotFoundException, UnauthorizedException {
+        EpisodeListResponse response = executor.gets(ids,token,EpisodeListResponse.class);
+        return response.getEpisodes().stream()
+                .map(EpisodeMapper::toEntity)
+                .toList();
     }
 }

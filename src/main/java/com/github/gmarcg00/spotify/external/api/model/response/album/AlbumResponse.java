@@ -19,8 +19,6 @@ public class AlbumResponse {
     private String albumType;
     @JsonProperty(value = "total_tracks")
     private int totalTracks;
-    @JsonProperty(value = "is_playable")
-    private boolean isPlayable;
     @JsonProperty(value = "available_markets")
     private List<String> availableMarkets;
     @JsonProperty(value = "external_urls")
