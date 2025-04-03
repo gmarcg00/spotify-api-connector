@@ -13,7 +13,8 @@ import java.util.List;
 public interface EpisodeService {
 
     /**
-     * Returns a {@link Episode Episode} which corresponds with the id
+     * Returns a {@link Episode Episode} which corresponds with the id.
+     *
      * @param id episode identifier
      * @param token access token to retrieve Spotify API data
      * @return {@link Episode Episode} the episode requested
@@ -23,7 +24,7 @@ public interface EpisodeService {
     Episode getEpisode(String id, String token) throws EntityNotFoundException, UnauthorizedException;
 
     /**
-     * Returns a list of {@link Episode Episode} corresponding to the provided identifiers
+     * Returns a list of {@link Episode Episode} corresponding to the provided identifiers.
      *
      * @param ids an array of episode identifiers
      * @param token access token to retrieve Spotify API data

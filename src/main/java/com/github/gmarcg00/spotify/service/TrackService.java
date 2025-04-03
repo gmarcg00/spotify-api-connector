@@ -15,6 +15,7 @@ public interface TrackService {
 
     /**
      * Returns a {@link Track Track} which corresponds with the id
+     *
      * @param id track identifier
      * @param token access token to retrieve Spotify API data
      * @return {@link Track Track} the track requested

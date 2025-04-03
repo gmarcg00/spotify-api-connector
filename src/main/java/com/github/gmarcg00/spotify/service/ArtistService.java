@@ -13,7 +13,8 @@ import java.util.List;
 public interface ArtistService {
 
     /**
-     * Returns an {@link Artist Artist} which corresponds with the id
+     * Returns an {@link Artist Artist} which corresponds with the id.
+     *
      * @param id artist identifier
      * @param token access token to retrieve Spotify API data
      * @return {@link Artist Artist} the artist requested
@@ -24,6 +25,7 @@ public interface ArtistService {
 
     /**
      * Returns a list of {@link Artist Artist} corresponding to the provided identifiers.
+     *
      * @param ids an array of artist identifiers
      * @param token access token to retrieve Spotify API data
      * @return a list of {@link Artist Artist} corresponding to the provided identifiers.
