@@ -13,6 +13,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Getter
 public class EpisodeResponse {
     @JsonProperty(value = "audio_preview_url")

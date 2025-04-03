@@ -8,7 +8,7 @@ public class EpisodeMapper {
     private EpisodeMapper(){}
 
     public static Episode toEntity(EpisodeResponse response){
-        Episode.Podcast podcast = toEntity(response.getShow());
+        Episode.Podcast podcast = response.getShow() != null ? toEntity(response.getShow()) : null;
         return Episode.builder()
                 .audioPreviewUrl(response.getAudioPreviewUrl())
                 .description(response.getDescription())
@@ -24,7 +24,7 @@ public class EpisodeMapper {
                 .language(response.getLanguage())
                 .languages(response.getLanguages())
                 .name(response.getName())
-                .releaseDate(response.getReleaseDate().toInstant())
+                .releaseDate(response.getReleaseDate() != null ? response.getReleaseDate().toInstant() : null)
                 .podcast(podcast)
                 .type(response.getType())
                 .uri(response.getUri())

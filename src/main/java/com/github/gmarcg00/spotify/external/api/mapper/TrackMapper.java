@@ -12,11 +12,11 @@ public class TrackMapper {
     private TrackMapper(){}
 
     public static Track toEntity(TrackResponse response){
-        List<Artist> artists = response.getArtists().stream()
+        List<Artist> artists = response.getArtists() != null ? response.getArtists().stream()
                 .map(TrackMapper::toEntity)
-                .toList();
+                .toList() : null;
         return Track.builder()
-                .album(toEntity(response.getAlbum()))
+                .album(response.getAlbum() != null ? toEntity(response.getAlbum()) : null)
                 .artists(artists)
                 .availableMarkets(response.getAvailableMarkets())
                 .discNumber(response.getDiscNumber())

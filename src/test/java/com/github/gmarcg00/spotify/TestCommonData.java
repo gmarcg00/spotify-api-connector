@@ -7,6 +7,8 @@ import com.github.gmarcg00.spotify.data.other.Follower;
 import com.github.gmarcg00.spotify.data.other.Image;
 import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.artist.ArtistResponse;
+import com.github.gmarcg00.spotify.external.api.model.response.episode.EpisodeResponse;
+import com.github.gmarcg00.spotify.external.api.model.response.track.TrackResponse;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,6 +20,19 @@ public class TestCommonData {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     private TestCommonData(){}
+
+    public static EpisodeResponse getEpisodeResponse(){
+        return EpisodeResponse.builder()
+                .name("La Puentecilla")
+                .build();
+    }
+
+    public static TrackResponse getTrackResponse(){
+        return TrackResponse.builder()
+                .id("4aawyAB9vmqN3uQ7FjRGTy")
+                .name("Paris")
+                .build();
+    }
 
     public static Artist getArtist(){
         return Artist.builder()
