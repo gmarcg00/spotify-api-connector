@@ -4,6 +4,8 @@ import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumListResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumResponse;
+import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumTracksResponse;
+import com.github.gmarcg00.spotify.utils.TestHelper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -36,26 +38,28 @@ class AlbumExecutorTest {
 
     @BeforeEach
     void setUp(){
-        executor = new Executor(URL);
+        executor = new Executor();
     }
 
     @Test
     void testGetAlbumNotFound(){
         //Given
         mockGetRequest("/albums/4aawyAB9vmqN3uQ7FjRGTyA",400,"album/get_album_not_found.json");
+        String path = URL.concat("/4aawyAB9vmqN3uQ7FjRGTyA");
 
         //When && Then
-        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> executor.get("4aawyAB9vmqN3uQ7FjRGTyA","token", AlbumResponse.class));
-        assertEquals("Entity with id: 4aawyAB9vmqN3uQ7FjRGTyA not found", exception.getMessage());
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> executor.get(path,"token", AlbumResponse.class));
+        assertEquals("Entity with id: %s not found", exception.getMessage());
     }
 
     @Test
     void testGetAlbumSuccessfully() throws UnauthorizedException, EntityNotFoundException {
         //Given
         mockGetRequest("/albums/4aawyAB9vmqN3uQ7FjRGTy",200,"album/get_album_successfully.json");
+        String path = URL.concat("/4aawyAB9vmqN3uQ7FjRGTy");
 
         //When
-        AlbumResponse response = executor.get("4aawyAB9vmqN3uQ7FjRGTy","token", AlbumResponse.class);
+        AlbumResponse response = executor.get(path,"token", AlbumResponse.class);
 
         //Then
         assertNotNull(response);
@@ -69,12 +73,15 @@ class AlbumExecutorTest {
         String[] ids = new String[2];
         ids[0]="64vx3cUb97lQGlgt8zozWL";
         ids[1]="7w1ESFMSHTpxQKlNLda9pt";
+        String path = TestHelper.buildSimpleGetListUri(URL,ids);
 
         //When
-        AlbumListResponse response = executor.gets(ids,"token", AlbumListResponse.class);
+        AlbumListResponse response = executor.get(path,"token", AlbumListResponse.class);
 
         //Then
         assertNotNull(response);
         assertNotNullFields(response);
     }
+
+
 }

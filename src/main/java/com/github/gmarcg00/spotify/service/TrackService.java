@@ -13,6 +13,8 @@ import java.util.List;
  */
 public interface TrackService {
 
+    String TRACKS_PATH = "https://api.spotify.com/v1/tracks";
+
     /**
      * Returns a {@link Track Track} which corresponds with the id
      *

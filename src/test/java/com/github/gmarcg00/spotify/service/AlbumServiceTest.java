@@ -8,6 +8,7 @@ import com.github.gmarcg00.spotify.external.api.Executor;
 import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumListResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumResponse;
 import com.github.gmarcg00.spotify.service.impl.AlbumServiceImpl;
+import com.github.gmarcg00.spotify.utils.TestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +24,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class AlbumServiceTest {
 
+    private final String domain = "https://api.spotify.com/v1/albums";
+
     private AlbumService service;
 
     @Mock
@@ -36,14 +39,15 @@ class AlbumServiceTest {
     @Test
     void testGetAlbumSuccessfully() throws ParseException, UnauthorizedException, EntityNotFoundException {
         //Given
-        when(executor.get("64vx3cUb97lQGlgt8zozWL","",AlbumResponse.class)).thenReturn(TestCommonData.getAlbumResponse());
+        String path = domain.concat("/64vx3cUb97lQGlgt8zozWL");
+        when(executor.get(path,"",AlbumResponse.class)).thenReturn(TestCommonData.getAlbumResponse());
 
         //When
         Album result = service.getAlbum("64vx3cUb97lQGlgt8zozWL","");
 
         //Then
         assertEquals("Paris",result.getName());
-        verify(executor,times(1)).get("64vx3cUb97lQGlgt8zozWL","", AlbumResponse.class);
+        verify(executor,times(1)).get(path,"", AlbumResponse.class);
     }
 
     @Test
@@ -51,8 +55,9 @@ class AlbumServiceTest {
         //Given
         String[] ids = new String[1];
         ids[0] = "7eLcDZDYHXZCebtQmVFL25";
+        String path = TestHelper.buildSimpleGetListUri(domain,ids);
         AlbumListResponse response = new AlbumListResponse(List.of(TestCommonData.getAlbumResponse()));
-        when(executor.gets(ids,"", AlbumListResponse.class)).thenReturn(response);
+        when(executor.get(path,"", AlbumListResponse.class)).thenReturn(response);
 
         //When
         List<Album> result = service.getAlbums(ids,"");
@@ -60,6 +65,6 @@ class AlbumServiceTest {
         //Then
         assertEquals(1,result.size());
         assertEquals("Paris",result.get(0).getName());
-        verify(executor,times(1)).gets(ids,"", AlbumListResponse.class);
+        verify(executor,times(1)).get(path,"", AlbumListResponse.class);
     }
 }

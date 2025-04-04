@@ -8,6 +8,7 @@ import com.github.gmarcg00.spotify.external.api.Executor;
 import com.github.gmarcg00.spotify.external.api.model.response.track.TrackListResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.track.TrackResponse;
 import com.github.gmarcg00.spotify.service.impl.TrackServiceImpl;
+import com.github.gmarcg00.spotify.utils.TestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +23,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class TrackServiceTest {
 
+    private final String domain = "https://api.spotify.com/v1/tracks";
+
     private TrackService service;
 
     @Mock
@@ -33,14 +36,15 @@ class TrackServiceTest {
     @Test
     void testGetTrackSuccessfully() throws UnauthorizedException, EntityNotFoundException {
         //Given
-        when(executor.get("4aawyAB9vmqN3uQ7FjRGTy","", TrackResponse.class)).thenReturn(TestCommonData.getTrackResponse());
+        String path = domain.concat("/4aawyAB9vmqN3uQ7FjRGTy");
+        when(executor.get(path,"", TrackResponse.class)).thenReturn(TestCommonData.getTrackResponse());
 
         //When
         Track track = service.getTrack("4aawyAB9vmqN3uQ7FjRGTy","");
 
         //Then
         assertEquals("Paris",track.getName());
-        verify(executor,times(1)).get("4aawyAB9vmqN3uQ7FjRGTy","", TrackResponse.class);
+        verify(executor,times(1)).get(path,"", TrackResponse.class);
     }
 
     @Test
@@ -48,8 +52,9 @@ class TrackServiceTest {
         //Given
         String[] ids = new String[1];
         ids[0] = "7eLcDZDYHXZCebtQmVFL25";
+        String path = TestHelper.buildSimpleGetListUri(domain,ids);
         TrackListResponse response = new TrackListResponse(List.of(TestCommonData.getTrackResponse()));
-        when(executor.gets(ids,"",TrackListResponse.class)).thenReturn(response);
+        when(executor.get(path,"",TrackListResponse.class)).thenReturn(response);
 
         //When
         List<Track> result = service.getTracks(ids,"");
@@ -57,6 +62,6 @@ class TrackServiceTest {
         //Then
         assertEquals(1,result.size());
         assertEquals("Paris",result.get(0).getName());
-        verify(executor,times(1)).gets(ids,"", TrackListResponse.class);
+        verify(executor,times(1)).get(path,"", TrackListResponse.class);
     }
 }

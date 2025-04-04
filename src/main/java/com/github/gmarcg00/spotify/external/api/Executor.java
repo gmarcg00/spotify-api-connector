@@ -20,26 +20,15 @@ public class Executor {
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final RequestClient client;
-    private final String path;
 
-    public Executor(String path){
+    public Executor(){
         this.client = RequestClient.getInstance();
-        this.path = path;
     }
 
-    public <T> T get(String id, String token, Class<T> responseType) throws UnauthorizedException, EntityNotFoundException {
-        HttpRequest request = createGetRequest(String.join("/",path, id),token);
+    public <T> T get(String path, String token, Class<T> responseType) throws UnauthorizedException, EntityNotFoundException {
+        HttpRequest request = createGetRequest(path,token);
         HttpResponse<T> response = doGet(request,new JsonObjectBodyHandler<>(responseType));
-        checkResponse(response,id);
-        return response.body();
-    }
-
-
-    public <T> T gets(String[] ids, String token, Class<T> responseType) throws UnauthorizedException, EntityNotFoundException {
-        String idsParam = String.join(",",ids);
-        HttpRequest request = createGetRequest(path + "?ids=" + idsParam,token);
-        HttpResponse<T> response = doGet(request,new JsonObjectBodyHandler<>(responseType));
-        checkResponse(response,ids[0]);
+        checkResponse(response);
         return response.body();
     }
 
@@ -51,7 +40,7 @@ public class Executor {
                 .build();
     }
 
-    private <T> HttpResponse<T>  doGet(HttpRequest request, AbstractJsonBodyHandler<T> bodyHandler){
+    private <T> HttpResponse<T> doGet(HttpRequest request, AbstractJsonBodyHandler<T> bodyHandler){
         try {
             return client.getClient().send(request, bodyHandler);
         } catch (IOException e) {
@@ -62,12 +51,12 @@ public class Executor {
         }
     }
 
-    private <T> void checkResponse(HttpResponse<T> response, String id) throws EntityNotFoundException, UnauthorizedException {
+    private <T> void checkResponse(HttpResponse<T> response) throws EntityNotFoundException, UnauthorizedException {
         switch (response.statusCode()){
             case HttpURLConnection.HTTP_UNAUTHORIZED :
                 throw new UnauthorizedException("INVALID_ACCESS_TOKEN");
             case HttpURLConnection.HTTP_BAD_REQUEST, HttpURLConnection.HTTP_NOT_FOUND:
-                throw new EntityNotFoundException(String.format("Entity with id: %s not found",id));
+                throw new EntityNotFoundException("Entity with id: %s not found");
             default:
                 break;
         }

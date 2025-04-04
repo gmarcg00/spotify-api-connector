@@ -1,7 +1,7 @@
 package com.github.gmarcg00.spotify.service;
 
-
 import com.github.gmarcg00.spotify.data.Album;
+import com.github.gmarcg00.spotify.data.Track;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 
@@ -12,6 +12,8 @@ import java.util.List;
  * <p> Service for managing albums </p>
  */
 public interface AlbumService {
+
+    String ALBUMS_PATH = "https://api.spotify.com/v1/albums";
 
     /**
      * Returns a {@link Album Album} which corresponds with the id.
@@ -34,4 +36,15 @@ public interface AlbumService {
      * @throws UnauthorizedException if the token has expired, is invalid, or is empty
      */
     List<Album> getAlbums(String[] ids, String token) throws EntityNotFoundException, UnauthorizedException;
+
+    /**
+     * Returns a list of {@link Track Track} from the requested {@link Album album}
+     *
+     * @param id {@link Album Album} identifier
+     * @param limit the maximum number of items to return. Default: 20, Minimum: 1, Maximum: 50.
+     * @param offset the index of the first item to return. Default: 0.
+     * @param token access token to retrieve Spotify API data
+     * @return a list of {@link Track Track} from the requested {@link Album album}
+     */
+    List<Track> getAlbumTracks(String id, String limit, String offset, String token) throws UnauthorizedException, EntityNotFoundException;
 }

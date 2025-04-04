@@ -1,15 +1,19 @@
 package com.github.gmarcg00.spotify.service.impl;
 
 import com.github.gmarcg00.spotify.data.Album;
+import com.github.gmarcg00.spotify.data.Track;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 import com.github.gmarcg00.spotify.external.api.Executor;
 import com.github.gmarcg00.spotify.external.api.mapper.AlbumMapper;
 import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumListResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumResponse;
+import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumTracksResponse;
 import com.github.gmarcg00.spotify.service.AlbumService;
 
 import java.util.List;
+
+import static com.github.gmarcg00.spotify.service.utils.BuildUriHelper.buildSimpleGetListUri;
 
 /**
  * @author Guillermo Marcos García
@@ -26,15 +30,45 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     public Album getAlbum(String id, String token) throws EntityNotFoundException, UnauthorizedException {
-        AlbumResponse responseModel = executor.get(id,token,AlbumResponse.class);
-        return AlbumMapper.toEntity(responseModel);
+        String path = String.join("/",ALBUMS_PATH,id);
+        AlbumResponse response = executor.get(path,token,AlbumResponse.class);
+        return AlbumMapper.toEntity(response);
     }
 
     @Override
     public List<Album> getAlbums(String[] ids, String token) throws EntityNotFoundException, UnauthorizedException {
-        AlbumListResponse response = executor.gets(ids,token, AlbumListResponse.class);
+        String path = buildSimpleGetListUri(ALBUMS_PATH,ids);
+        AlbumListResponse response = executor.get(path,token, AlbumListResponse.class);
         return response.getAlbums().stream()
                 .map(AlbumMapper::toEntity)
                 .toList();
+    }
+
+    @Override
+    public List<Track> getAlbumTracks(String id, String limit, String offset, String token) throws UnauthorizedException, EntityNotFoundException {
+        String path = String.join("/",ALBUMS_PATH,id,"tracks");
+        path= addQueryParams(path,limit,offset);
+        AlbumTracksResponse response = executor.get(path,token,AlbumTracksResponse.class);
+        return response.getItems().stream()
+                .map(AlbumMapper::toEntity)
+                .toList();
+    }
+
+    private String addQueryParams(String path, String limit, String offset){
+        StringBuilder queryBuilder = new StringBuilder(path);
+        boolean hasQuestionMark = path.contains("?");
+
+        if (limit != null && !limit.isBlank()) {
+            queryBuilder.append(hasQuestionMark ? "&" : "?");
+            queryBuilder.append("limit=").append(limit);
+            hasQuestionMark = true;
+        }
+
+        if (offset != null && !offset.isBlank()) {
+            queryBuilder.append(hasQuestionMark ? "&" : "?");
+            queryBuilder.append("offset=").append(offset);
+        }
+
+        return queryBuilder.toString();
     }
 }

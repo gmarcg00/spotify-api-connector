@@ -4,6 +4,7 @@ import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 import com.github.gmarcg00.spotify.external.api.model.response.track.TrackListResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.track.TrackResponse;
+import com.github.gmarcg00.spotify.utils.TestHelper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -36,15 +37,17 @@ class TrackExecutorTest {
 
     @BeforeEach
     void setUp(){
-        executor = new Executor(URL);}
+        executor = new Executor();}
 
     @Test
     void testGetTrackSuccessfully() throws UnauthorizedException, EntityNotFoundException {
         //Given
         mockGetRequest("/tracks/1zTzz7nUxA2UxE6NhNTWSF",200,"track/get_track_successfully.json");
+        String path = URL.concat("/1zTzz7nUxA2UxE6NhNTWSF");
+
 
         //When
-        TrackResponse response = executor.get("1zTzz7nUxA2UxE6NhNTWSF","token", TrackResponse.class);
+        TrackResponse response = executor.get(path,"token", TrackResponse.class);
 
         //Then
         assertNotNull(response);
@@ -58,10 +61,10 @@ class TrackExecutorTest {
         String[] ids = new String[2];
         ids[0]="2HHr7vMPAD2kOL599AvQep";
         ids[1]="1zTzz7nUxA2UxE6NhNTWSF";
-
+        String path = TestHelper.buildSimpleGetListUri(URL,ids);
 
         //When
-        TrackListResponse response = executor.gets(ids,"token", TrackListResponse.class);
+        TrackListResponse response = executor.get(path,"token", TrackListResponse.class);
 
         //Then
         assertNotNull(response);

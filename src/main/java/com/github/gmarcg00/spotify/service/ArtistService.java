@@ -12,6 +12,8 @@ import java.util.List;
  */
 public interface ArtistService {
 
+    String ARTISTS_PATH = "https://api.spotify.com/v1/artists";
+
     /**
      * Returns an {@link Artist Artist} which corresponds with the id.
      *

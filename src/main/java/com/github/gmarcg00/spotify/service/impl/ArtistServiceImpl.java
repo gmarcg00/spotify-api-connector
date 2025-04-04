@@ -11,6 +11,8 @@ import com.github.gmarcg00.spotify.service.ArtistService;
 
 import java.util.List;
 
+import static com.github.gmarcg00.spotify.service.utils.BuildUriHelper.buildSimpleGetListUri;
+
 
 /**
  * @author Guillermo Marcos García
@@ -27,16 +29,17 @@ public class ArtistServiceImpl implements ArtistService {
 
     @Override
     public Artist getArtist(String id, String token) throws EntityNotFoundException, UnauthorizedException {
-        ArtistResponse response = executor.get(id,token,ArtistResponse.class);
+        String path = String.join("/",ARTISTS_PATH,id);
+        ArtistResponse response = executor.get(path,token,ArtistResponse.class);
         return ArtistMapper.toEntity(response);
     }
 
     @Override
     public List<Artist> getArtists(String[] ids, String token) throws EntityNotFoundException, UnauthorizedException {
-        ArtistListResponse response = executor.gets(ids,token, ArtistListResponse.class);
+        String path = buildSimpleGetListUri(ARTISTS_PATH,ids);
+        ArtistListResponse response = executor.get(path,token, ArtistListResponse.class);
         return response.getArtists().stream()
                 .map(ArtistMapper::toEntity)
                 .toList();
     }
-
 }
