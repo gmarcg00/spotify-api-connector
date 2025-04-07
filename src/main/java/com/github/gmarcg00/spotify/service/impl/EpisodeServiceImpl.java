@@ -1,6 +1,7 @@
 package com.github.gmarcg00.spotify.service.impl;
 
 import com.github.gmarcg00.spotify.data.Episode;
+import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 import com.github.gmarcg00.spotify.external.api.Executor;
@@ -10,6 +11,9 @@ import com.github.gmarcg00.spotify.external.api.model.response.episode.EpisodeRe
 import com.github.gmarcg00.spotify.service.EpisodeService;
 
 import java.util.List;
+
+import static com.github.gmarcg00.spotify.service.utils.BuildUriHelper.buildSimpleGetListUri;
+
 
 /**
  * @author Guillermo Marcos García
@@ -23,14 +27,16 @@ public class EpisodeServiceImpl implements EpisodeService {
     public EpisodeServiceImpl(Executor executor){this.executor = executor;}
 
     @Override
-    public Episode getEpisode(String id, String token) throws EntityNotFoundException, UnauthorizedException {
-        EpisodeResponse response = executor.get(id,token, EpisodeResponse.class);
+    public Episode getEpisode(String id, String token) throws EntityNotFoundException, UnauthorizedException, BadRequestException {
+        String path = String.join("/",EPISODES_PATH,id);
+        EpisodeResponse response = executor.get(path,token, EpisodeResponse.class);
         return EpisodeMapper.toEntity(response);
     }
 
     @Override
-    public List<Episode> getEpisodes(String[] ids, String token) throws EntityNotFoundException, UnauthorizedException {
-        EpisodeListResponse response = executor.gets(ids,token,EpisodeListResponse.class);
+    public List<Episode> getEpisodes(String[] ids, String token) throws EntityNotFoundException, UnauthorizedException, BadRequestException {
+        String path = buildSimpleGetListUri(EPISODES_PATH,ids);
+        EpisodeListResponse response = executor.get(path,token,EpisodeListResponse.class);
         return response.getEpisodes().stream()
                 .map(EpisodeMapper::toEntity)
                 .toList();

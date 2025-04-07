@@ -1,6 +1,7 @@
 package com.github.gmarcg00.spotify.service;
 
 import com.github.gmarcg00.spotify.data.Track;
+import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 
@@ -13,6 +14,8 @@ import java.util.List;
  */
 public interface TrackService {
 
+    String TRACKS_PATH = "https://api.spotify.com/v1/tracks";
+
     /**
      * Returns a {@link Track Track} which corresponds with the id
      *
@@ -22,7 +25,7 @@ public interface TrackService {
      * @throws EntityNotFoundException if the track is not found
      * @throws UnauthorizedException if token has expired, is invalid or is empty
      */
-    Track getTrack(String id, String token) throws EntityNotFoundException, UnauthorizedException;
+    Track getTrack(String id, String token) throws EntityNotFoundException, UnauthorizedException, BadRequestException;
 
     /**
      * Returns a list of {@link Track Tracks} corresponding to the provided identifiers.
@@ -33,6 +36,6 @@ public interface TrackService {
      * @throws EntityNotFoundException if no track is found
      * @throws UnauthorizedException if the token has expired, is invalid, or is empty
      */
-    List<Track> getTracks(String[] ids, String token) throws UnauthorizedException, EntityNotFoundException;
+    List<Track> getTracks(String[] ids, String token) throws UnauthorizedException, EntityNotFoundException, BadRequestException;
 
 }
