@@ -2,6 +2,7 @@ package com.github.gmarcg00.spotify.service;
 
 import com.github.gmarcg00.spotify.TestCommonData;
 import com.github.gmarcg00.spotify.data.Album;
+import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 import com.github.gmarcg00.spotify.external.api.Executor;
@@ -37,7 +38,7 @@ class AlbumServiceTest {
     }
 
     @Test
-    void testGetAlbumSuccessfully() throws ParseException, UnauthorizedException, EntityNotFoundException {
+    void testGetAlbumSuccessfully() throws ParseException, UnauthorizedException, EntityNotFoundException, BadRequestException {
         //Given
         String path = domain.concat("/64vx3cUb97lQGlgt8zozWL");
         when(executor.get(path,"",AlbumResponse.class)).thenReturn(TestCommonData.getAlbumResponse());
@@ -51,7 +52,7 @@ class AlbumServiceTest {
     }
 
     @Test
-    void testGetAlbumsSuccessfully() throws ParseException, UnauthorizedException, EntityNotFoundException {
+    void testGetAlbumsSuccessfully() throws ParseException, UnauthorizedException, EntityNotFoundException, BadRequestException {
         //Given
         String[] ids = new String[1];
         ids[0] = "7eLcDZDYHXZCebtQmVFL25";

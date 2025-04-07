@@ -2,6 +2,7 @@ package com.github.gmarcg00.spotify.service;
 
 import com.github.gmarcg00.spotify.data.Album;
 import com.github.gmarcg00.spotify.data.Track;
+import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 
@@ -24,7 +25,7 @@ public interface AlbumService {
      * @throws EntityNotFoundException if the album is not found
      * @throws UnauthorizedException if token has expired, is invalid or is empty
      */
-    Album getAlbum(String id, String token) throws EntityNotFoundException, UnauthorizedException;
+    Album getAlbum(String id, String token) throws EntityNotFoundException, UnauthorizedException, BadRequestException;
 
     /**
      * Returns a list of {@link Album Album} corresponding to the provided identifiers.
@@ -35,7 +36,7 @@ public interface AlbumService {
      * @throws EntityNotFoundException if no {@link Album Album} is found
      * @throws UnauthorizedException if the token has expired, is invalid, or is empty
      */
-    List<Album> getAlbums(String[] ids, String token) throws EntityNotFoundException, UnauthorizedException;
+    List<Album> getAlbums(String[] ids, String token) throws EntityNotFoundException, UnauthorizedException, BadRequestException;
 
     /**
      * Returns a list of {@link Track Track} from the requested {@link Album album}
@@ -46,5 +47,5 @@ public interface AlbumService {
      * @param token access token to retrieve Spotify API data
      * @return a list of {@link Track Track} from the requested {@link Album album}
      */
-    List<Track> getAlbumTracks(String id, String limit, String offset, String token) throws UnauthorizedException, EntityNotFoundException;
+    List<Track> getAlbumTracks(String id, String limit, String offset, String token) throws UnauthorizedException, EntityNotFoundException, BadRequestException;
 }

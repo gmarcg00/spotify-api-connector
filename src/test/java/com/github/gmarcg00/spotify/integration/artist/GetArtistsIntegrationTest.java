@@ -1,9 +1,10 @@
-package com.github.gmarcg00.spotify.external.api;
+package com.github.gmarcg00.spotify.integration.artist;
 
+import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
+import com.github.gmarcg00.spotify.external.api.Executor;
 import com.github.gmarcg00.spotify.external.api.model.response.artist.ArtistListResponse;
-import com.github.gmarcg00.spotify.external.api.model.response.artist.ArtistResponse;
 import com.github.gmarcg00.spotify.utils.TestHelper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterAll;
@@ -16,7 +17,7 @@ import static com.github.gmarcg00.spotify.utils.MockHelper.mockGetRequest;
 import static com.github.gmarcg00.spotify.utils.TestHelper.assertNotNullFields;
 import static org.junit.jupiter.api.Assertions.*;
 
-class ArtistExecutorTest {
+class GetArtistsIntegrationTest {
 
     private static final String URL = "http://localhost:8080/artists";
 
@@ -40,44 +41,21 @@ class ArtistExecutorTest {
     }
 
     @Test
-    void testGetArtistWithoutPermissions(){
+    void testGetArtistsNotFound(){
         //Given
-        mockGetRequest("/artists/4aawyAB9vmqN3uQ7FjRGTy",401,"artist/get_artist_without_permissions.json");
-        String path = URL.concat("/4aawyAB9vmqN3uQ7FjRGTy");
-
+        mockGetRequest("/artists?ids=4aawyAB9vmqN3uQ7FjRGTy,4aawyAB9vmqN3uQ7FjRhhh",400,"artist/get_artists_not_found.json");
+        String[] ids = new String[2];
+        ids[0]="4aawyAB9vmqN3uQ7FjRGTy";
+        ids[1]="4aawyAB9vmqN3uQ7FjRhhh";
+        String path = TestHelper.buildSimpleGetListUri(URL,ids);
 
         //When && Then
-        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> executor.get(path,"expired", ArtistResponse.class));
-        assertEquals("INVALID_ACCESS_TOKEN",exception.getMessage());
+        Exception exception = assertThrows(BadRequestException.class, () -> executor.get(path,"token", ArtistListResponse.class));
+        assertEquals("Invalid base62 id",exception.getMessage());
     }
 
     @Test
-    void testGetArtistNotFound(){
-        //Given
-        mockGetRequest("/artists/4aawyAB9vmqN3uQ7FjRhhh",404,"artist/get_artist_not_found.json");
-        String path = URL.concat("/4aawyAB9vmqN3uQ7FjRhhh");
-
-        //When && Then
-        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> executor.get(path,"token", ArtistResponse.class));
-        assertEquals("Entity with id: %s not found",exception.getMessage());
-    }
-
-    @Test
-    void testGetArtistSuccessfully() throws UnauthorizedException, EntityNotFoundException {
-        //Given
-        mockGetRequest("/artists/4aawyAB9vmqN3uQ7FjRGTy",200,"artist/get_artist_successfully.json");
-        String path = URL.concat("/4aawyAB9vmqN3uQ7FjRGTy");
-
-        //When
-        ArtistResponse result = executor.get(path,"token", ArtistResponse.class);
-
-        //Then
-        assertNotNull(result);
-        assertNotNullFields(result);
-    }
-
-    @Test
-    void testGetArtistsSuccessfully() throws UnauthorizedException, EntityNotFoundException {
+    void testGetArtistsSuccessfully() throws UnauthorizedException, EntityNotFoundException, BadRequestException {
         //Given
         mockGetRequest("/artists?ids=7eLcDZDYHXZCebtQmVFL25,2CIMQHirSU0MQqyYHq0eOx",200,"artist/get_artists_successfully.json");
         String[] ids = new String[2];

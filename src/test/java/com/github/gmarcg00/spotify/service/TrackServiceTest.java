@@ -2,6 +2,7 @@ package com.github.gmarcg00.spotify.service;
 
 import com.github.gmarcg00.spotify.TestCommonData;
 import com.github.gmarcg00.spotify.data.Track;
+import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 import com.github.gmarcg00.spotify.external.api.Executor;
@@ -34,7 +35,7 @@ class TrackServiceTest {
     public void setUp(){service = new TrackServiceImpl(executor);}
 
     @Test
-    void testGetTrackSuccessfully() throws UnauthorizedException, EntityNotFoundException {
+    void testGetTrackSuccessfully() throws UnauthorizedException, EntityNotFoundException, BadRequestException {
         //Given
         String path = domain.concat("/4aawyAB9vmqN3uQ7FjRGTy");
         when(executor.get(path,"", TrackResponse.class)).thenReturn(TestCommonData.getTrackResponse());
@@ -48,7 +49,7 @@ class TrackServiceTest {
     }
 
     @Test
-    void testGetTracksSuccessfully() throws UnauthorizedException, EntityNotFoundException {
+    void testGetTracksSuccessfully() throws UnauthorizedException, EntityNotFoundException, BadRequestException {
         //Given
         String[] ids = new String[1];
         ids[0] = "7eLcDZDYHXZCebtQmVFL25";

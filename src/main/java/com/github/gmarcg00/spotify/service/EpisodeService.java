@@ -1,6 +1,7 @@
 package com.github.gmarcg00.spotify.service;
 
 import com.github.gmarcg00.spotify.data.Episode;
+import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 
@@ -23,7 +24,7 @@ public interface EpisodeService {
      * @throws EntityNotFoundException if the episode is not found
      * @throws UnauthorizedException if token has expired, is invalid or is empty
      */
-    Episode getEpisode(String id, String token) throws EntityNotFoundException, UnauthorizedException;
+    Episode getEpisode(String id, String token) throws EntityNotFoundException, UnauthorizedException, BadRequestException;
 
     /**
      * Returns a list of {@link Episode Episode} corresponding to the provided identifiers.
@@ -34,5 +35,5 @@ public interface EpisodeService {
      * @throws EntityNotFoundException if no {@link Episode Episode} is found
      * @throws UnauthorizedException if the token has expired, is invalid, or is empty
      */
-    List<Episode> getEpisodes(String[] ids,String token) throws EntityNotFoundException, UnauthorizedException;
+    List<Episode> getEpisodes(String[] ids,String token) throws EntityNotFoundException, UnauthorizedException, BadRequestException;
 }

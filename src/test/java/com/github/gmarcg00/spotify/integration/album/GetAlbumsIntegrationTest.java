@@ -1,10 +1,10 @@
-package com.github.gmarcg00.spotify.external.api;
+package com.github.gmarcg00.spotify.integration.album;
 
+import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
+import com.github.gmarcg00.spotify.external.api.Executor;
 import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumListResponse;
-import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumResponse;
-import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumTracksResponse;
 import com.github.gmarcg00.spotify.utils.TestHelper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterAll;
@@ -12,13 +12,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 import static com.github.gmarcg00.spotify.utils.MockHelper.getServer;
 import static com.github.gmarcg00.spotify.utils.MockHelper.mockGetRequest;
 import static com.github.gmarcg00.spotify.utils.TestHelper.assertNotNullFields;
 import static org.junit.jupiter.api.Assertions.*;
 
-class AlbumExecutorTest {
+class GetAlbumsIntegrationTest {
 
     private static final String URL = "http://localhost:8080/albums";
 
@@ -42,32 +41,21 @@ class AlbumExecutorTest {
     }
 
     @Test
-    void testGetAlbumNotFound(){
+    void testGetAlbumsNotFound(){
         //Given
-        mockGetRequest("/albums/4aawyAB9vmqN3uQ7FjRGTyA",400,"album/get_album_not_found.json");
-        String path = URL.concat("/4aawyAB9vmqN3uQ7FjRGTyA");
+        mockGetRequest("/albums?ids=64vx3cUb97lQGlgt8zozWLx,7w1ESFMSHTpxQKlNLda9pt",400,"album/get_albums_not_found.json");
+        String[] ids = new String[2];
+        ids[0]="64vx3cUb97lQGlgt8zozWLx";
+        ids[1]="7w1ESFMSHTpxQKlNLda9pt";
+        String path = TestHelper.buildSimpleGetListUri(URL,ids);
 
         //When && Then
-        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> executor.get(path,"token", AlbumResponse.class));
-        assertEquals("Entity with id: %s not found", exception.getMessage());
+        Exception exception = assertThrows(BadRequestException.class, () -> executor.get(path,"token",AlbumListResponse.class));
+        assertEquals("Invalid base62 id",exception.getMessage());
     }
 
     @Test
-    void testGetAlbumSuccessfully() throws UnauthorizedException, EntityNotFoundException {
-        //Given
-        mockGetRequest("/albums/4aawyAB9vmqN3uQ7FjRGTy",200,"album/get_album_successfully.json");
-        String path = URL.concat("/4aawyAB9vmqN3uQ7FjRGTy");
-
-        //When
-        AlbumResponse response = executor.get(path,"token", AlbumResponse.class);
-
-        //Then
-        assertNotNull(response);
-        assertNotNullFields(response);
-    }
-
-    @Test
-    void testGetAlbumsSuccessfully() throws UnauthorizedException, EntityNotFoundException {
+    void testGetAlbumsSuccessfully() throws UnauthorizedException, EntityNotFoundException, BadRequestException {
         //Given
         mockGetRequest("/albums?ids=64vx3cUb97lQGlgt8zozWL,7w1ESFMSHTpxQKlNLda9pt",200,"album/get_albums_successfully.json");
         String[] ids = new String[2];
@@ -82,6 +70,4 @@ class AlbumExecutorTest {
         assertNotNull(response);
         assertNotNullFields(response);
     }
-
-
 }

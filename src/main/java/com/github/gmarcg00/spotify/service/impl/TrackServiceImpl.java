@@ -1,6 +1,7 @@
 package com.github.gmarcg00.spotify.service.impl;
 
 import com.github.gmarcg00.spotify.data.Track;
+import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 import com.github.gmarcg00.spotify.external.api.Executor;
@@ -27,14 +28,14 @@ public class TrackServiceImpl implements TrackService {
     }
 
     @Override
-    public Track getTrack(String id, String token) throws EntityNotFoundException, UnauthorizedException {
+    public Track getTrack(String id, String token) throws EntityNotFoundException, UnauthorizedException, BadRequestException {
         String path = String.join("/",TRACKS_PATH,id);
         TrackResponse response = executor.get(path,token,TrackResponse.class);
         return TrackMapper.toEntity(response);
     }
 
     @Override
-    public List<Track> getTracks(String[] ids, String token) throws UnauthorizedException, EntityNotFoundException {
+    public List<Track> getTracks(String[] ids, String token) throws UnauthorizedException, EntityNotFoundException, BadRequestException {
         String path = buildSimpleGetListUri(TRACKS_PATH,ids);
         TrackListResponse response = executor.get(path,token, TrackListResponse.class);
         return response.getTracks().stream()

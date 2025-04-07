@@ -1,5 +1,6 @@
-package com.github.gmarcg00.spotify.integration;
+package com.github.gmarcg00.spotify.integration.album;
 
+import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 import com.github.gmarcg00.spotify.external.api.Executor;
@@ -15,7 +16,7 @@ import static com.github.gmarcg00.spotify.utils.MockHelper.mockGetRequest;
 import static com.github.gmarcg00.spotify.utils.TestHelper.assertNotNullFields;
 import static org.junit.jupiter.api.Assertions.*;
 
-class GetAlbumTracksTest {
+class GetAlbumTracksIntegrationTest {
 
     private static final String URL = "http://localhost:8080/albums";
 
@@ -45,12 +46,12 @@ class GetAlbumTracksTest {
         String path = URL.concat("/5VaYKNDJhjfWtghV9UL1Bj/tracks?limit=0");
 
         //When && Then
-        Exception exception = assertThrows(EntityNotFoundException.class, () -> executor.get(path,"token", AlbumTracksResponse.class));
-        assertEquals("Entity with id: %s not found",exception.getMessage());
+        Exception exception = assertThrows(BadRequestException.class, () -> executor.get(path,"token", AlbumTracksResponse.class));
+        assertEquals("Invalid limit",exception.getMessage());
     }
 
     @Test
-    void testGetAlbumTracksSuccessfully() throws UnauthorizedException, EntityNotFoundException {
+    void testGetAlbumTracksSuccessfully() throws UnauthorizedException, EntityNotFoundException, BadRequestException {
         //Given
         mockGetRequest("/albums/5VaYKNDJhjfWtghV9UL1Bj/tracks",200,"album/get_album_tracks_successfully.json");
         String path = URL.concat("/5VaYKNDJhjfWtghV9UL1Bj/tracks");

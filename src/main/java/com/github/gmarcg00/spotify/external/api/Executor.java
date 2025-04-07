@@ -1,12 +1,9 @@
 package com.github.gmarcg00.spotify.external.api;
 
 import com.github.gmarcg00.spotify.RequestClient;
-import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
-import com.github.gmarcg00.spotify.exception.InternalServerException;
-import com.github.gmarcg00.spotify.exception.NetworkConnectionException;
-import com.github.gmarcg00.spotify.exception.UnauthorizedException;
-import com.github.gmarcg00.spotify.utils.AbstractJsonBodyHandler;
-import com.github.gmarcg00.spotify.utils.JsonObjectBodyHandler;
+import com.github.gmarcg00.spotify.exception.*;
+import com.github.gmarcg00.spotify.external.api.model.SpotifyApiErrorResponse;
+import com.github.gmarcg00.spotify.utils.GlobalMapper;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -25,11 +22,11 @@ public class Executor {
         this.client = RequestClient.getInstance();
     }
 
-    public <T> T get(String path, String token, Class<T> responseType) throws UnauthorizedException, EntityNotFoundException {
+    public <T> T get(String path, String token, Class<T> responseType) throws UnauthorizedException, EntityNotFoundException, BadRequestException {
         HttpRequest request = createGetRequest(path,token);
-        HttpResponse<T> response = doGet(request,new JsonObjectBodyHandler<>(responseType));
+        HttpResponse<String> response = doRequest(request,HttpResponse.BodyHandlers.ofString());
         checkResponse(response);
-        return response.body();
+        return GlobalMapper.getInstance().map(response.body(),responseType);
     }
 
     private HttpRequest createGetRequest(String path,String token){
@@ -40,7 +37,7 @@ public class Executor {
                 .build();
     }
 
-    private <T> HttpResponse<T> doGet(HttpRequest request, AbstractJsonBodyHandler<T> bodyHandler){
+    private HttpResponse<String> doRequest(HttpRequest request, HttpResponse.BodyHandler<String> bodyHandler){
         try {
             return client.getClient().send(request, bodyHandler);
         } catch (IOException e) {
@@ -51,14 +48,20 @@ public class Executor {
         }
     }
 
-    private <T> void checkResponse(HttpResponse<T> response) throws EntityNotFoundException, UnauthorizedException {
+    private void checkResponse(HttpResponse<String> response) throws EntityNotFoundException, UnauthorizedException, BadRequestException {
+        if(response.statusCode() == HttpURLConnection.HTTP_OK) return;
+        SpotifyApiErrorResponse errorResponse = GlobalMapper.getInstance().map(response.body(),SpotifyApiErrorResponse.class);
+        String errorMessage = errorResponse.getError().getMessage();
         switch (response.statusCode()){
             case HttpURLConnection.HTTP_UNAUTHORIZED :
-                throw new UnauthorizedException("INVALID_ACCESS_TOKEN");
-            case HttpURLConnection.HTTP_BAD_REQUEST, HttpURLConnection.HTTP_NOT_FOUND:
-                throw new EntityNotFoundException("Entity with id: %s not found");
+                throw new UnauthorizedException(errorMessage);
+            case HttpURLConnection.HTTP_BAD_REQUEST:
+                throw new BadRequestException(errorMessage);
+            case HttpURLConnection.HTTP_NOT_FOUND:
+                throw new EntityNotFoundException(errorMessage);
             default:
                 break;
         }
     }
+
 }

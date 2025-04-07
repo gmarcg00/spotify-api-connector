@@ -1,6 +1,7 @@
 package com.github.gmarcg00.spotify.service.impl;
 
 import com.github.gmarcg00.spotify.data.Episode;
+import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 import com.github.gmarcg00.spotify.external.api.Executor;
@@ -26,14 +27,14 @@ public class EpisodeServiceImpl implements EpisodeService {
     public EpisodeServiceImpl(Executor executor){this.executor = executor;}
 
     @Override
-    public Episode getEpisode(String id, String token) throws EntityNotFoundException, UnauthorizedException {
+    public Episode getEpisode(String id, String token) throws EntityNotFoundException, UnauthorizedException, BadRequestException {
         String path = String.join("/",EPISODES_PATH,id);
         EpisodeResponse response = executor.get(path,token, EpisodeResponse.class);
         return EpisodeMapper.toEntity(response);
     }
 
     @Override
-    public List<Episode> getEpisodes(String[] ids, String token) throws EntityNotFoundException, UnauthorizedException {
+    public List<Episode> getEpisodes(String[] ids, String token) throws EntityNotFoundException, UnauthorizedException, BadRequestException {
         String path = buildSimpleGetListUri(EPISODES_PATH,ids);
         EpisodeListResponse response = executor.get(path,token,EpisodeListResponse.class);
         return response.getEpisodes().stream()

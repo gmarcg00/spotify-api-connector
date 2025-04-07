@@ -2,6 +2,7 @@ package com.github.gmarcg00.spotify.service;
 
 import com.github.gmarcg00.spotify.TestCommonData;
 import com.github.gmarcg00.spotify.data.Episode;
+import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 import com.github.gmarcg00.spotify.external.api.Executor;
@@ -34,7 +35,7 @@ class EpisodeServiceTest {
     public void setUp(){service =  new EpisodeServiceImpl(executor);}
 
     @Test
-    void testGetEpisodeSuccessfully() throws UnauthorizedException, EntityNotFoundException {
+    void testGetEpisodeSuccessfully() throws UnauthorizedException, EntityNotFoundException, BadRequestException {
         //Given
         String path = domain.concat("/7eLcDZDYHXZCebtQmVFL25");
         when(executor.get(path,"", EpisodeResponse.class)).thenReturn(TestCommonData.getEpisodeResponse());
@@ -48,7 +49,7 @@ class EpisodeServiceTest {
     }
 
     @Test
-    void testGetEpisodesSuccessfully() throws UnauthorizedException, EntityNotFoundException {
+    void testGetEpisodesSuccessfully() throws UnauthorizedException, EntityNotFoundException, BadRequestException {
         //Given
         String[] ids = new String[1];
         ids[0] = "7eLcDZDYHXZCebtQmVFL25";
