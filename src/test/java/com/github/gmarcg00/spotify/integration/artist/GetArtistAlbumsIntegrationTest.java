@@ -1,7 +1,8 @@
 package com.github.gmarcg00.spotify.integration.artist;
 
 import com.github.gmarcg00.spotify.config.Config;
-import com.github.gmarcg00.spotify.data.Artist;
+import com.github.gmarcg00.spotify.data.Album;
+import com.github.gmarcg00.spotify.data.other.AlbumType;
 import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
@@ -18,10 +19,10 @@ import java.util.List;
 
 import static com.github.gmarcg00.spotify.utils.MockHelper.getServer;
 import static com.github.gmarcg00.spotify.utils.MockHelper.mockGetRequest;
-import static com.github.gmarcg00.spotify.utils.TestHelper.assertNotNullFields;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class GetArtistsIntegrationTest {
+class GetArtistAlbumsIntegrationTest {
 
     private static final String URL = "http://localhost:8080/artists";
 
@@ -47,33 +48,31 @@ class GetArtistsIntegrationTest {
     }
 
     @Test
-    void testGetArtistsNotFound(){
+    void testGetArtistAlbumsDefaultRequest() throws UnauthorizedException, BadRequestException, EntityNotFoundException {
         //Given
-        mockGetRequest("/artists?ids=4aawyAB9vmqN3uQ7FjRGTy,4aawyAB9vmqN3uQ7FjRhhh",400,"artist/get_artists_not_found.json");
-        String[] ids = new String[2];
-        ids[0]="4aawyAB9vmqN3uQ7FjRGTy";
-        ids[1]="4aawyAB9vmqN3uQ7FjRhhh";
+        mockGetRequest("/artists/7eLcDZDYHXZCebtQmVFL25/albums",200,"artist/album/get_artist_albums_default_request.json");
 
-        //When && Then
-        Exception exception = assertThrows(BadRequestException.class, () -> service.getArtists(ids,"token"));
-        assertEquals("Invalid base62 id",exception.getMessage());
+        //When
+        List<Album> response = service.getArtistAlbum("7eLcDZDYHXZCebtQmVFL25", new AlbumType[]{},"","","token");
+
+        //Then
+        assertNotNull(response);
+        assertEquals(20,response.size());
     }
 
     @Test
-    void testGetArtistsSuccessfully() throws UnauthorizedException, EntityNotFoundException, BadRequestException {
+    void testGetArtistAlbumsCustomRequest() throws UnauthorizedException, BadRequestException, EntityNotFoundException {
         //Given
-        mockGetRequest("/artists?ids=7eLcDZDYHXZCebtQmVFL25,2CIMQHirSU0MQqyYHq0eOx",200,"artist/get_artists_successfully.json");
-        String[] ids = new String[2];
-        ids[0]="7eLcDZDYHXZCebtQmVFL25";
-        ids[1]="2CIMQHirSU0MQqyYHq0eOx";
+        mockGetRequest("/artists/7eLcDZDYHXZCebtQmVFL25/albums?limit=30&offset=2&include_groups=album,single",200,"artist/album/get_artist_albums_custom_request.json");
+        AlbumType[] albumTypes = new AlbumType[2];
+        albumTypes[0] = AlbumType.ALBUM;
+        albumTypes[1] = AlbumType.SINGLE;
 
         //When
-        List<Artist> result = service.getArtists(ids,"token");
+        List<Album> response = service.getArtistAlbum("7eLcDZDYHXZCebtQmVFL25",albumTypes,"30","2","token");
 
         //Then
-        assertNotNull(result);
-        for(Artist artist: result.stream().toList()){
-            assertNotNullFields(artist);
-        }
+        assertNotNull(response);
+        assertEquals(30,response.size());
     }
 }

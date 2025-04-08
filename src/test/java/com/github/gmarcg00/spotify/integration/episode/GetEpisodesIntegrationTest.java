@@ -1,16 +1,20 @@
 package com.github.gmarcg00.spotify.integration.episode;
 
+import com.github.gmarcg00.spotify.config.Config;
+import com.github.gmarcg00.spotify.data.Episode;
 import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 import com.github.gmarcg00.spotify.external.api.Executor;
-import com.github.gmarcg00.spotify.external.api.model.response.episode.EpisodeListResponse;
-import com.github.gmarcg00.spotify.utils.TestHelper;
+import com.github.gmarcg00.spotify.service.EpisodeService;
+import com.github.gmarcg00.spotify.service.impl.EpisodeServiceImpl;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static com.github.gmarcg00.spotify.utils.MockHelper.getServer;
 import static com.github.gmarcg00.spotify.utils.MockHelper.mockGetRequest;
@@ -22,12 +26,13 @@ class GetEpisodesIntegrationTest {
     private static final String URL = "http://localhost:8080/episodes";
 
     private static WireMockServer wireMockServer;
-    private Executor executor;
+    private EpisodeService service;
 
     @BeforeAll
     static void startWiremock(){
         wireMockServer = getServer();
         wireMockServer.start();
+        Config.EPISODES_PATH = URL;
     }
 
     @AfterAll
@@ -37,7 +42,8 @@ class GetEpisodesIntegrationTest {
 
     @BeforeEach
     void setUp(){
-        executor = new Executor();
+       Executor executor = new Executor();
+       service = new EpisodeServiceImpl(executor);
     }
 
     @Test
@@ -47,10 +53,9 @@ class GetEpisodesIntegrationTest {
         String [] ids = new String[2];
         ids[0] = "4eIS8RhRNZXUTiyKL04cQK";
         ids[1] = "5TrEALrPu0wjmaoUyYmENjx";
-        String path = TestHelper.buildSimpleGetListUri(URL,ids);
 
         //When && Then
-        Exception exception = assertThrows(BadRequestException.class, () -> executor.get(path,"", EpisodeListResponse.class));
+        Exception exception = assertThrows(BadRequestException.class, () -> service.getEpisodes(ids,"token"));
         assertEquals("Invalid base62 id",exception.getMessage());
     }
 
@@ -61,13 +66,14 @@ class GetEpisodesIntegrationTest {
         String [] ids = new String[2];
         ids[0] = "4eIS8RhRNZXUTiyKL04cQK";
         ids[1] = "5TrEALrPu0wjmaoUyYmENj";
-        String path = TestHelper.buildSimpleGetListUri(URL,ids);
 
         //When
-        EpisodeListResponse response = executor.get(path,"token",EpisodeListResponse.class);
+        List<Episode> response = service.getEpisodes(ids,"token");
 
         //Then
         assertNotNull(response);
-        assertNotNullFields(response);
+        for(Episode episode : response.stream().toList()){
+            assertNotNullFields(episode);
+        }
     }
 }

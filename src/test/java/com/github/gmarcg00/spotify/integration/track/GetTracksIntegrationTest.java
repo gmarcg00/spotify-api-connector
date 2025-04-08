@@ -1,16 +1,20 @@
 package com.github.gmarcg00.spotify.integration.track;
 
+import com.github.gmarcg00.spotify.config.Config;
+import com.github.gmarcg00.spotify.data.Track;
 import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 import com.github.gmarcg00.spotify.external.api.Executor;
-import com.github.gmarcg00.spotify.external.api.model.response.track.TrackListResponse;
-import com.github.gmarcg00.spotify.utils.TestHelper;
+import com.github.gmarcg00.spotify.service.TrackService;
+import com.github.gmarcg00.spotify.service.impl.TrackServiceImpl;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static com.github.gmarcg00.spotify.utils.MockHelper.getServer;
 import static com.github.gmarcg00.spotify.utils.MockHelper.mockGetRequest;
@@ -22,12 +26,13 @@ class GetTracksIntegrationTest {
     private static final String URL = "http://localhost:8080/tracks";
 
     private static WireMockServer wireMockServer;
-    private Executor executor;
+    private TrackService service;
 
     @BeforeAll
     static void startWiremock(){
         wireMockServer = getServer();
         wireMockServer.start();
+        Config.TRACKS_PATH = URL;
     }
 
     @AfterAll
@@ -37,7 +42,8 @@ class GetTracksIntegrationTest {
 
     @BeforeEach
     void setUp(){
-        executor = new Executor();
+       Executor executor = new Executor();
+       service = new TrackServiceImpl(executor);
     }
 
     @Test
@@ -47,13 +53,14 @@ class GetTracksIntegrationTest {
         String[] ids = new String[2];
         ids[0]="2HHr7vMPAD2kOL599AvQep";
         ids[1]="1zTzz7nUxA2UxE6NhNTWSF";
-        String path = TestHelper.buildSimpleGetListUri(URL,ids);
 
         //When
-        TrackListResponse response = executor.get(path,"token", TrackListResponse.class);
+        List<Track> response = service.getTracks(ids,"token");
 
         //Then
         assertNotNull(response);
-        assertNotNullFields(response);
+        for(Track track: response.stream().toList()){
+            assertNotNullFields(track);
+        }
     }
 }

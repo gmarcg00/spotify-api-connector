@@ -12,6 +12,7 @@ import com.github.gmarcg00.spotify.service.EpisodeService;
 
 import java.util.List;
 
+import static com.github.gmarcg00.spotify.config.Config.EPISODES_PATH;
 import static com.github.gmarcg00.spotify.service.utils.BuildUriHelper.buildSimpleGetListUri;
 
 

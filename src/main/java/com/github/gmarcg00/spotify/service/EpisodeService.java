@@ -13,8 +13,6 @@ import java.util.List;
  */
 public interface EpisodeService {
 
-    String EPISODES_PATH = "https://api.spotify.com/v1/episodes";
-
     /**
      * Returns a {@link Episode Episode} which corresponds with the id.
      *

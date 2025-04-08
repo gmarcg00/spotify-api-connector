@@ -14,8 +14,6 @@ import java.util.List;
  */
 public interface AlbumService {
 
-    String ALBUMS_PATH = "https://api.spotify.com/v1/albums";
-
     /**
      * Returns a {@link Album Album} which corresponds with the id.
      *

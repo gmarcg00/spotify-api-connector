@@ -14,6 +14,7 @@ import com.github.gmarcg00.spotify.service.AlbumService;
 
 import java.util.List;
 
+import static com.github.gmarcg00.spotify.config.Config.ALBUMS_PATH;
 import static com.github.gmarcg00.spotify.service.utils.BuildUriHelper.buildSimpleGetListUri;
 
 /**
@@ -48,7 +49,7 @@ public class AlbumServiceImpl implements AlbumService {
     @Override
     public List<Track> getAlbumTracks(String id, String limit, String offset, String token) throws UnauthorizedException, EntityNotFoundException, BadRequestException {
         String path = String.join("/",ALBUMS_PATH,id,"tracks");
-        path= addQueryParams(path,limit,offset);
+        path = addQueryParams(path,limit,offset);
         AlbumTracksResponse response = executor.get(path,token,AlbumTracksResponse.class);
         return response.getItems().stream()
                 .map(AlbumMapper::toEntity)
