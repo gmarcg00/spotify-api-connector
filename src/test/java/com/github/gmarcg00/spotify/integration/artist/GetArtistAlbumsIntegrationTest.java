@@ -19,8 +19,7 @@ import java.util.List;
 
 import static com.github.gmarcg00.spotify.utils.MockHelper.getServer;
 import static com.github.gmarcg00.spotify.utils.MockHelper.mockGetRequest;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class GetArtistAlbumsIntegrationTest {
 
@@ -45,6 +44,16 @@ class GetArtistAlbumsIntegrationTest {
     void setUp(){
         Executor executor = new Executor();
         service = new ArtistServiceImpl(executor);
+    }
+
+    @Test
+    void testGetArtistAlbumsArtistNotFound(){
+        //Given
+        mockGetRequest("/artists/7eLcDZDYHXZCebtQmVFL24/albums",404,"artist/album/artist_not_found.json");
+
+        //When && Then
+        Exception exception = assertThrows(EntityNotFoundException.class, () -> service.getArtistAlbum("7eLcDZDYHXZCebtQmVFL24", new AlbumType[]{},"","","token"));
+        assertEquals("Resource not found",exception.getMessage());
     }
 
     @Test
