@@ -19,6 +19,7 @@ public class TrackMapper {
                 .album(response.getAlbum() != null ? toEntity(response.getAlbum()) : null)
                 .artists(artists)
                 .availableMarkets(response.getAvailableMarkets())
+                .externalUrl(response.getExternalUrl())
                 .discNumber(response.getDiscNumber())
                 .duration(response.getDuration())
                 .explicit(response.isExplicit())

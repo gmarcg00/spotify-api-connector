@@ -1,10 +1,13 @@
 package com.github.gmarcg00.spotify.integration.track;
 
+import com.github.gmarcg00.spotify.config.Config;
+import com.github.gmarcg00.spotify.data.Track;
 import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 import com.github.gmarcg00.spotify.external.api.Executor;
-import com.github.gmarcg00.spotify.external.api.model.response.track.TrackResponse;
+import com.github.gmarcg00.spotify.service.TrackService;
+import com.github.gmarcg00.spotify.service.impl.TrackServiceImpl;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,12 +24,13 @@ class GetTrackIntegrationTest {
     private static final String URL = "http://localhost:8080/tracks";
 
     private static WireMockServer wireMockServer;
-    private Executor executor;
+    private TrackService service;
 
     @BeforeAll
     static void startWiremock(){
         wireMockServer = getServer();
         wireMockServer.start();
+        Config.TRACKS_PATH = URL;
     }
 
     @AfterAll
@@ -36,17 +40,17 @@ class GetTrackIntegrationTest {
 
     @BeforeEach
     void setUp(){
-        executor = new Executor();
+       Executor executor = new Executor();
+       service = new TrackServiceImpl(executor);
     }
 
     @Test
     void testGetTrackFailedAuth(){
         //Given
         mockGetRequest("/tracks/1zTzz7nUxA2UxE6NhNTWSFA",401,"generic/failed_auth.json");
-        String path = URL.concat("/1zTzz7nUxA2UxE6NhNTWSFA");
 
         //When && Then
-        Exception exception = assertThrows(UnauthorizedException.class, () -> executor.get(path,"", TrackResponse.class));
+        Exception exception = assertThrows(UnauthorizedException.class, () -> service.getTrack("1zTzz7nUxA2UxE6NhNTWSFA","token"));
         assertEquals("No token provided",exception.getMessage());
     }
 
@@ -54,10 +58,9 @@ class GetTrackIntegrationTest {
     void testGetTrackNotFound(){
         //Given
         mockGetRequest("/tracks/1zTzz7nUxA2UxE6NhNTWSFs",400,"track/get_track_not_found.json");
-        String path = URL.concat("/1zTzz7nUxA2UxE6NhNTWSFs");
 
         //When && Then
-        Exception exception = assertThrows(BadRequestException.class, () -> executor.get(path,"", TrackResponse.class));
+        Exception exception = assertThrows(BadRequestException.class, () -> service.getTrack("1zTzz7nUxA2UxE6NhNTWSFs","token"));
         assertEquals("Invalid base62 id",exception.getMessage());
     }
 
@@ -66,11 +69,9 @@ class GetTrackIntegrationTest {
     void testGetTrackSuccessfully() throws UnauthorizedException, EntityNotFoundException, BadRequestException {
         //Given
         mockGetRequest("/tracks/1zTzz7nUxA2UxE6NhNTWSF",200,"track/get_track_successfully.json");
-        String path = URL.concat("/1zTzz7nUxA2UxE6NhNTWSF");
-
 
         //When
-        TrackResponse response = executor.get(path,"token", TrackResponse.class);
+        Track response = service.getTrack("1zTzz7nUxA2UxE6NhNTWSF","token");
 
         //Then
         assertNotNull(response);

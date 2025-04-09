@@ -1,6 +1,8 @@
 package com.github.gmarcg00.spotify.service;
 
+import com.github.gmarcg00.spotify.data.Album;
 import com.github.gmarcg00.spotify.data.Artist;
+import com.github.gmarcg00.spotify.data.other.AlbumType;
 import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
@@ -12,8 +14,6 @@ import java.util.List;
  * <p> Service for managing artists </p>
  */
 public interface ArtistService {
-
-    String ARTISTS_PATH = "https://api.spotify.com/v1/artists";
 
     /**
      * Returns an {@link Artist Artist} which corresponds with the id.
@@ -37,4 +37,15 @@ public interface ArtistService {
      */
     List<Artist> getArtists(String[] ids, String token) throws EntityNotFoundException, UnauthorizedException, BadRequestException;
 
+    /**
+     * Returns a list of {@link Album Album} belonging to the corresponding artist.
+     *
+     * @param id artist identifier
+     * @param albumTypes A comma-separated list of keywords that will be used to filter the response. If not supplied, all album types will be returned.
+     * @param limit the maximum number of items to return. Default: 20, Minimum: 1, Maximum: 50.
+     * @param offset the index of the first item to return. Default: 0.
+     * @param token access token to retrieve Spotify API data
+     * @return a list of {@link Album Album} belonging to the corresponding artist
+     */
+    List<Album> getArtistAlbum(String id, AlbumType[] albumTypes, String limit, String offset, String token) throws UnauthorizedException, BadRequestException, EntityNotFoundException;
 }

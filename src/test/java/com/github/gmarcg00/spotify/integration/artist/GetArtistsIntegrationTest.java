@@ -1,16 +1,20 @@
 package com.github.gmarcg00.spotify.integration.artist;
 
+import com.github.gmarcg00.spotify.config.Config;
+import com.github.gmarcg00.spotify.data.Artist;
 import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 import com.github.gmarcg00.spotify.external.api.Executor;
-import com.github.gmarcg00.spotify.external.api.model.response.artist.ArtistListResponse;
-import com.github.gmarcg00.spotify.utils.TestHelper;
+import com.github.gmarcg00.spotify.service.ArtistService;
+import com.github.gmarcg00.spotify.service.impl.ArtistServiceImpl;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static com.github.gmarcg00.spotify.utils.MockHelper.getServer;
 import static com.github.gmarcg00.spotify.utils.MockHelper.mockGetRequest;
@@ -22,12 +26,13 @@ class GetArtistsIntegrationTest {
     private static final String URL = "http://localhost:8080/artists";
 
     private static WireMockServer wireMockServer;
-    private Executor executor;
+    private ArtistService service;
 
     @BeforeAll
     static void startWiremock(){
         wireMockServer = getServer();
         wireMockServer.start();
+        Config.ARTISTS_PATH = URL;
     }
 
     @AfterAll
@@ -37,7 +42,8 @@ class GetArtistsIntegrationTest {
 
     @BeforeEach
     void setUp(){
-        executor = new Executor();
+        Executor executor = new Executor();
+        service = new ArtistServiceImpl(executor);
     }
 
     @Test
@@ -47,10 +53,9 @@ class GetArtistsIntegrationTest {
         String[] ids = new String[2];
         ids[0]="4aawyAB9vmqN3uQ7FjRGTy";
         ids[1]="4aawyAB9vmqN3uQ7FjRhhh";
-        String path = TestHelper.buildSimpleGetListUri(URL,ids);
 
         //When && Then
-        Exception exception = assertThrows(BadRequestException.class, () -> executor.get(path,"token", ArtistListResponse.class));
+        Exception exception = assertThrows(BadRequestException.class, () -> service.getArtists(ids,"token"));
         assertEquals("Invalid base62 id",exception.getMessage());
     }
 
@@ -61,13 +66,14 @@ class GetArtistsIntegrationTest {
         String[] ids = new String[2];
         ids[0]="7eLcDZDYHXZCebtQmVFL25";
         ids[1]="2CIMQHirSU0MQqyYHq0eOx";
-        String path = TestHelper.buildSimpleGetListUri(URL,ids);
 
         //When
-        ArtistListResponse result = executor.get(path,"token", ArtistListResponse.class);
+        List<Artist> result = service.getArtists(ids,"token");
 
         //Then
         assertNotNull(result);
-        assertNotNullFields(result);
+        for(Artist artist: result.stream().toList()){
+            assertNotNullFields(artist);
+        }
     }
 }

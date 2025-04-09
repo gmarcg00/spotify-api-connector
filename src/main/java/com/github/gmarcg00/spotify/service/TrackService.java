@@ -7,14 +7,11 @@ import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 
 import java.util.List;
 
-
 /**
  * @author Guillermo Marcos García
  * <p> Service for managing tracks </p>
  */
 public interface TrackService {
-
-    String TRACKS_PATH = "https://api.spotify.com/v1/tracks";
 
     /**
      * Returns a {@link Track Track} which corresponds with the id

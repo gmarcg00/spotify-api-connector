@@ -1,18 +1,24 @@
 package com.github.gmarcg00.spotify.service.impl;
 
+import com.github.gmarcg00.spotify.data.Album;
 import com.github.gmarcg00.spotify.data.Artist;
+import com.github.gmarcg00.spotify.data.other.AlbumType;
 import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 import com.github.gmarcg00.spotify.external.api.Executor;
 import com.github.gmarcg00.spotify.external.api.mapper.ArtistMapper;
+import com.github.gmarcg00.spotify.external.api.model.response.artist.ArtistAlbumsResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.artist.ArtistListResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.artist.ArtistResponse;
 import com.github.gmarcg00.spotify.service.ArtistService;
 
+import java.util.Arrays;
 import java.util.List;
 
+import static com.github.gmarcg00.spotify.config.Config.ARTISTS_PATH;
 import static com.github.gmarcg00.spotify.service.utils.BuildUriHelper.buildSimpleGetListUri;
+import static com.github.gmarcg00.spotify.service.utils.ServiceUtils.addQueryParams;
 
 
 /**
@@ -40,6 +46,20 @@ public class ArtistServiceImpl implements ArtistService {
         String path = buildSimpleGetListUri(ARTISTS_PATH,ids);
         ArtistListResponse response = executor.get(path,token, ArtistListResponse.class);
         return response.getArtists().stream()
+                .map(ArtistMapper::toEntity)
+                .toList();
+    }
+
+    @Override
+    public List<Album> getArtistAlbum(String id, AlbumType[] albumTypes, String limit, String offset, String token) throws UnauthorizedException, BadRequestException, EntityNotFoundException {
+        String path = String.join("/", ARTISTS_PATH,id,"albums");
+        String types = String.join(",", Arrays.stream(albumTypes)
+                .map(AlbumType::name)
+                .map(String::toLowerCase)
+                .toList());
+        path = addQueryParams(path,limit,offset,types);
+        ArtistAlbumsResponse response = executor.get(path,token,ArtistAlbumsResponse.class);
+        return response.getItems().stream()
                 .map(ArtistMapper::toEntity)
                 .toList();
     }

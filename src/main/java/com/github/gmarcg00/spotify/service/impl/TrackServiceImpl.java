@@ -12,6 +12,7 @@ import com.github.gmarcg00.spotify.service.TrackService;
 
 import java.util.List;
 
+import static com.github.gmarcg00.spotify.config.Config.TRACKS_PATH;
 import static com.github.gmarcg00.spotify.service.utils.BuildUriHelper.buildSimpleGetListUri;
 
 /**
