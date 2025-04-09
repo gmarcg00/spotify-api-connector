@@ -2,6 +2,7 @@ package com.github.gmarcg00.spotify.service.impl;
 
 import com.github.gmarcg00.spotify.data.Album;
 import com.github.gmarcg00.spotify.data.Artist;
+import com.github.gmarcg00.spotify.data.Track;
 import com.github.gmarcg00.spotify.data.other.AlbumType;
 import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
@@ -11,6 +12,7 @@ import com.github.gmarcg00.spotify.external.api.mapper.ArtistMapper;
 import com.github.gmarcg00.spotify.external.api.model.response.artist.ArtistAlbumsResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.artist.ArtistListResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.artist.ArtistResponse;
+import com.github.gmarcg00.spotify.external.api.model.response.artist.ArtistTopTracksResponse;
 import com.github.gmarcg00.spotify.service.ArtistService;
 
 import java.util.Arrays;
@@ -51,7 +53,7 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public List<Album> getArtistAlbum(String id, AlbumType[] albumTypes, String limit, String offset, String token) throws UnauthorizedException, BadRequestException, EntityNotFoundException {
+    public List<Album> getArtistAlbums(String id, AlbumType[] albumTypes, String limit, String offset, String token) throws UnauthorizedException, BadRequestException, EntityNotFoundException {
         String path = String.join("/", ARTISTS_PATH,id,"albums");
         String types = String.join(",", Arrays.stream(albumTypes)
                 .map(AlbumType::name)
@@ -60,6 +62,15 @@ public class ArtistServiceImpl implements ArtistService {
         path = addQueryParams(path,limit,offset,types);
         ArtistAlbumsResponse response = executor.get(path,token,ArtistAlbumsResponse.class);
         return response.getItems().stream()
+                .map(ArtistMapper::toEntity)
+                .toList();
+    }
+
+    @Override
+    public List<Track> getArtistTopTracks(String id, String token) throws UnauthorizedException, BadRequestException, EntityNotFoundException {
+        String path = String.join("/", ARTISTS_PATH,id,"top-tracks");
+        ArtistTopTracksResponse response = executor.get(path,token,ArtistTopTracksResponse.class);
+        return response.getTracks().stream()
                 .map(ArtistMapper::toEntity)
                 .toList();
     }
