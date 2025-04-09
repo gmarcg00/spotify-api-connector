@@ -52,7 +52,7 @@ class GetArtistAlbumsIntegrationTest {
         mockGetRequest("/artists/7eLcDZDYHXZCebtQmVFL24/albums",404,"artist/album/artist_not_found.json");
 
         //When && Then
-        Exception exception = assertThrows(EntityNotFoundException.class, () -> service.getArtistAlbum("7eLcDZDYHXZCebtQmVFL24", new AlbumType[]{},"","","token"));
+        Exception exception = assertThrows(EntityNotFoundException.class, () -> service.getArtistAlbums("7eLcDZDYHXZCebtQmVFL24", new AlbumType[]{},"","","token"));
         assertEquals("Resource not found",exception.getMessage());
     }
 
@@ -62,7 +62,7 @@ class GetArtistAlbumsIntegrationTest {
         mockGetRequest("/artists/7eLcDZDYHXZCebtQmVFL25/albums",200,"artist/album/get_artist_albums_default_request.json");
 
         //When
-        List<Album> response = service.getArtistAlbum("7eLcDZDYHXZCebtQmVFL25", new AlbumType[]{},"","","token");
+        List<Album> response = service.getArtistAlbums("7eLcDZDYHXZCebtQmVFL25", new AlbumType[]{},"","","token");
 
         //Then
         assertNotNull(response);
@@ -78,7 +78,7 @@ class GetArtistAlbumsIntegrationTest {
         albumTypes[1] = AlbumType.SINGLE;
 
         //When
-        List<Album> response = service.getArtistAlbum("7eLcDZDYHXZCebtQmVFL25",albumTypes,"30","2","token");
+        List<Album> response = service.getArtistAlbums("7eLcDZDYHXZCebtQmVFL25",albumTypes,"30","2","token");
 
         //Then
         assertNotNull(response);

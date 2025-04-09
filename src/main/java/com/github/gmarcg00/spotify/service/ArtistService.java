@@ -2,6 +2,7 @@ package com.github.gmarcg00.spotify.service;
 
 import com.github.gmarcg00.spotify.data.Album;
 import com.github.gmarcg00.spotify.data.Artist;
+import com.github.gmarcg00.spotify.data.Track;
 import com.github.gmarcg00.spotify.data.other.AlbumType;
 import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
@@ -47,5 +48,14 @@ public interface ArtistService {
      * @param token access token to retrieve Spotify API data
      * @return a list of {@link Album Album} belonging to the corresponding artist
      */
-    List<Album> getArtistAlbum(String id, AlbumType[] albumTypes, String limit, String offset, String token) throws UnauthorizedException, BadRequestException, EntityNotFoundException;
+    List<Album> getArtistAlbums(String id, AlbumType[] albumTypes, String limit, String offset, String token) throws UnauthorizedException, BadRequestException, EntityNotFoundException;
+
+    /**
+     * Returns a list with the top {@link Track Track} of the artist
+     *
+     * @param id artist identifier
+     * @param token access token to retrieve Spotify API data
+     * @return the list with th top {@link Track Track} of the artist
+     */
+    List<Track> getArtistTopTracks(String id, String token) throws UnauthorizedException, BadRequestException, EntityNotFoundException;
 }
