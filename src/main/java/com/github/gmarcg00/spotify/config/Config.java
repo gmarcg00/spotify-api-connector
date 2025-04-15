@@ -10,4 +10,6 @@ public class Config {
     public static String TRACKS_PATH = "https://api.spotify.com/v1/tracks";
     public static String PLAYLISTS_PATH = "https://api.spotify.com/v1/playlists";
 
+    public static String ACCESS_TOKEN_PATH = "https://accounts.spotify.com/api/token";
+
 }
