@@ -16,7 +16,7 @@ import static com.github.gmarcg00.spotify.utils.MockHelper.mockGetRequest;
 import static com.github.gmarcg00.spotify.utils.TestHelper.assertNotNullFields;
 import static org.junit.jupiter.api.Assertions.*;
 
-class GetAlbumTracksIntegrationTest {
+class GetAlbumElementsIntegrationTest {
 
     private static final String URL = "http://localhost:8080/albums";
 
