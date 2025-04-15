@@ -1,4 +1,4 @@
-package com.github.gmarcg00.spotify.external.api.model;
+package com.github.gmarcg00.spotify.external.api.model.exception;
 
 
 import lombok.AllArgsConstructor;

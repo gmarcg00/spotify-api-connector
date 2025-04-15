@@ -16,6 +16,7 @@ import java.util.List;
 
 import static com.github.gmarcg00.spotify.config.Config.ALBUMS_PATH;
 import static com.github.gmarcg00.spotify.service.utils.BuildUriHelper.buildSimpleGetListUri;
+import static com.github.gmarcg00.spotify.service.utils.ServiceUtils.addQueryParams;
 
 /**
  * @author Guillermo Marcos García
@@ -54,23 +55,5 @@ public class AlbumServiceImpl implements AlbumService {
         return response.getItems().stream()
                 .map(AlbumMapper::toEntity)
                 .toList();
-    }
-
-    private String addQueryParams(String path, String limit, String offset){
-        StringBuilder queryBuilder = new StringBuilder(path);
-        boolean hasQuestionMark = path.contains("?");
-
-        if (limit != null && !limit.isBlank()) {
-            queryBuilder.append(hasQuestionMark ? "&" : "?");
-            queryBuilder.append("limit=").append(limit);
-            hasQuestionMark = true;
-        }
-
-        if (offset != null && !offset.isBlank()) {
-            queryBuilder.append(hasQuestionMark ? "&" : "?");
-            queryBuilder.append("offset=").append(offset);
-        }
-
-        return queryBuilder.toString();
     }
 }

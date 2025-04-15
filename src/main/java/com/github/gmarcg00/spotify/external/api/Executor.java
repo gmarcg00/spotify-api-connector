@@ -2,7 +2,8 @@ package com.github.gmarcg00.spotify.external.api;
 
 import com.github.gmarcg00.spotify.RequestClient;
 import com.github.gmarcg00.spotify.exception.*;
-import com.github.gmarcg00.spotify.external.api.model.SpotifyApiErrorResponse;
+import com.github.gmarcg00.spotify.external.api.model.exception.SpotifyApiErrorResponse;
+import com.github.gmarcg00.spotify.external.api.model.exception.SpotifyAuthErrorResponse;
 import com.github.gmarcg00.spotify.utils.GlobalMapper;
 
 import java.io.IOException;
@@ -14,7 +15,9 @@ import java.net.http.HttpResponse;
 public class Executor {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String CONTENT_TYPE_HEADER = "Content-Type";
     private static final String BEARER_PREFIX = "Bearer ";
+    private static final String APPLICATION_URL_ENCODED = "application/x-www-form-urlencoded";
 
     private final RequestClient client;
 
@@ -34,6 +37,24 @@ public class Executor {
                 .uri(URI.create(path))
                 .header(AUTHORIZATION_HEADER, BEARER_PREFIX + token)
                 .GET()
+                .build();
+    }
+
+    public <T> T post(String path, String body, Class<T> responseType) throws BadRequestException {
+        HttpRequest request = createPostRequest(path,body);
+        HttpResponse<String> response = doRequest(request,HttpResponse.BodyHandlers.ofString());
+        if(response.statusCode() == 400){
+            SpotifyAuthErrorResponse responseError = GlobalMapper.getInstance().map(response.body(),SpotifyAuthErrorResponse.class);
+            throw new BadRequestException(responseError.getErrorDescription());
+        }
+        return GlobalMapper.getInstance().map(response.body(),responseType);
+    }
+
+    private HttpRequest createPostRequest(String path, String body){
+        return HttpRequest.newBuilder()
+                .uri(URI.create(path))
+                .header(CONTENT_TYPE_HEADER, APPLICATION_URL_ENCODED)
+                .POST(HttpRequest.BodyPublishers.ofString(body))
                 .build();
     }
 

@@ -12,7 +12,7 @@ import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 public interface PlaylistService {
 
     /**
-     * Returns a {@link Playlist Playlist} which corresponds with the id
+     * Returns a {@link Playlist Playlist} owned by a Spotify user
      *
      * @param id playlist identifier
      * @param token access token to retrieve Spotify API data
