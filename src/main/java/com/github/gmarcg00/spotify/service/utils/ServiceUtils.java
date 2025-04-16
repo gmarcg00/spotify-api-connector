@@ -1,5 +1,9 @@
 package com.github.gmarcg00.spotify.service.utils;
 
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Stream;
+
 public class ServiceUtils {
 
     private ServiceUtils(){}
@@ -43,5 +47,16 @@ public class ServiceUtils {
         }
 
         return queryBuilder.toString();
+    }
+
+    public static String[] combine(String[] arr, String value){
+        return Stream.concat(Arrays.stream(arr), Stream.of(value))
+                .toArray(String[]::new);
+    }
+
+    public static void checkNullValues(String... values){
+        for(String value : values){
+            Objects.requireNonNull(value,"object must not be null");
+        }
     }
 }

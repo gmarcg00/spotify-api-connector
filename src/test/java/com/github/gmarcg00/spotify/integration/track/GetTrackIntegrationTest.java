@@ -2,9 +2,7 @@ package com.github.gmarcg00.spotify.integration.track;
 
 import com.github.gmarcg00.spotify.config.Config;
 import com.github.gmarcg00.spotify.data.Track;
-import com.github.gmarcg00.spotify.exception.BadRequestException;
-import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
-import com.github.gmarcg00.spotify.exception.UnauthorizedException;
+import com.github.gmarcg00.spotify.exception.*;
 import com.github.gmarcg00.spotify.external.api.Executor;
 import com.github.gmarcg00.spotify.service.TrackService;
 import com.github.gmarcg00.spotify.service.impl.TrackServiceImpl;
@@ -19,7 +17,7 @@ import static com.github.gmarcg00.spotify.utils.MockHelper.mockGetRequest;
 import static com.github.gmarcg00.spotify.utils.TestHelper.assertNotNullFields;
 import static org.junit.jupiter.api.Assertions.*;
 
-class GetPlaylistElementIntegrationTest {
+class GetTrackIntegrationTest {
 
     private static final String URL = "http://localhost:8080/tracks";
 
@@ -47,26 +45,35 @@ class GetPlaylistElementIntegrationTest {
     @Test
     void testGetTrackFailedAuth(){
         //Given
-        mockGetRequest("/tracks/1zTzz7nUxA2UxE6NhNTWSFA",401,"generic/failed_auth.json");
+        mockGetRequest("/tracks/1zTzz7nUxA2UxE6NhNTWSN",401,"generic/failed_auth.json");
 
         //When && Then
-        Exception exception = assertThrows(UnauthorizedException.class, () -> service.getTrack("1zTzz7nUxA2UxE6NhNTWSFA","token"));
+        Exception exception = assertThrows(UnauthorizedException.class, () -> service.getTrack("1zTzz7nUxA2UxE6NhNTWSN","token"));
         assertEquals("No token provided",exception.getMessage());
+    }
+
+    @Test
+    void testGetTrackInvalidId(){
+        //Given
+        mockGetRequest("/tracks/1zTzz7nUxA2UxE6NhNTWSFA",400,"generic/invalid_resource_id.json");
+
+        //When && Then
+        Exception exception = assertThrows(BadRequestException.class, () -> service.getTrack("1zTzz7nUxA2UxE6NhNTWSFA","token"));
+        assertEquals("Invalid base62 id",exception.getMessage());
     }
 
     @Test
     void testGetTrackNotFound(){
         //Given
-        mockGetRequest("/tracks/1zTzz7nUxA2UxE6NhNTWSFs",400,"track/get_track_not_found.json");
+        mockGetRequest("/tracks/1zTzz7nUxA2UxE6NhNTWSFs",404,"track/get_track_not_found.json");
 
         //When && Then
-        Exception exception = assertThrows(BadRequestException.class, () -> service.getTrack("1zTzz7nUxA2UxE6NhNTWSFs","token"));
-        assertEquals("Invalid base62 id",exception.getMessage());
+        Exception exception = assertThrows(EntityNotFoundException.class, () -> service.getTrack("1zTzz7nUxA2UxE6NhNTWSFs","token"));
+        assertEquals("Resource not found",exception.getMessage());
     }
 
-
     @Test
-    void testGetTrackSuccessfully() throws UnauthorizedException, EntityNotFoundException, BadRequestException {
+    void testGetTrackSuccessfully() throws SpotifyApiException {
         //Given
         mockGetRequest("/tracks/1zTzz7nUxA2UxE6NhNTWSF",200,"track/get_track_successfully.json");
 

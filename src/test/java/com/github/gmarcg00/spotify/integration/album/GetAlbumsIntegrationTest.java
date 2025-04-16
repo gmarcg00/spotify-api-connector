@@ -2,9 +2,7 @@ package com.github.gmarcg00.spotify.integration.album;
 
 import com.github.gmarcg00.spotify.config.Config;
 import com.github.gmarcg00.spotify.data.Album;
-import com.github.gmarcg00.spotify.exception.BadRequestException;
-import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
-import com.github.gmarcg00.spotify.exception.UnauthorizedException;
+import com.github.gmarcg00.spotify.exception.*;
 import com.github.gmarcg00.spotify.external.api.Executor;
 import com.github.gmarcg00.spotify.service.AlbumService;
 import com.github.gmarcg00.spotify.service.impl.AlbumServiceImpl;
@@ -60,7 +58,7 @@ class GetAlbumsIntegrationTest {
     }
 
     @Test
-    void testGetAlbumsSuccessfully() throws UnauthorizedException, EntityNotFoundException, BadRequestException {
+    void testGetAlbumsSuccessfully() throws SpotifyApiException {
         //Given
         mockGetRequest("/albums?ids=64vx3cUb97lQGlgt8zozWL,7w1ESFMSHTpxQKlNLda9pt",200,"album/get_albums_successfully.json");
         String[] ids = new String[2];

@@ -4,9 +4,7 @@ import com.github.gmarcg00.spotify.data.Album;
 import com.github.gmarcg00.spotify.data.Artist;
 import com.github.gmarcg00.spotify.data.Track;
 import com.github.gmarcg00.spotify.data.other.AlbumType;
-import com.github.gmarcg00.spotify.exception.BadRequestException;
-import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
-import com.github.gmarcg00.spotify.exception.UnauthorizedException;
+import com.github.gmarcg00.spotify.exception.*;
 import com.github.gmarcg00.spotify.external.api.Executor;
 import com.github.gmarcg00.spotify.external.api.mapper.ArtistMapper;
 import com.github.gmarcg00.spotify.external.api.model.response.artist.ArtistAlbumsResponse;
@@ -37,14 +35,14 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public Artist getArtist(String id, String token) throws EntityNotFoundException, UnauthorizedException, BadRequestException {
+    public Artist getArtist(String id, String token) throws SpotifyApiException {
         String path = String.join("/",ARTISTS_PATH,id);
         ArtistResponse response = executor.get(path,token,ArtistResponse.class);
         return ArtistMapper.toEntity(response);
     }
 
     @Override
-    public List<Artist> getArtists(String[] ids, String token) throws EntityNotFoundException, UnauthorizedException, BadRequestException {
+    public List<Artist> getArtists(String[] ids, String token) throws SpotifyApiException {
         String path = buildSimpleGetListUri(ARTISTS_PATH,ids);
         ArtistListResponse response = executor.get(path,token, ArtistListResponse.class);
         return response.getArtists().stream()
@@ -53,7 +51,7 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public List<Album> getArtistAlbums(String id, AlbumType[] albumTypes, String limit, String offset, String token) throws UnauthorizedException, BadRequestException, EntityNotFoundException {
+    public List<Album> getArtistAlbums(String id, AlbumType[] albumTypes, String limit, String offset, String token) throws SpotifyApiException{
         String path = String.join("/", ARTISTS_PATH,id,"albums");
         String types = String.join(",", Arrays.stream(albumTypes)
                 .map(AlbumType::name)
@@ -67,7 +65,7 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public List<Track> getArtistTopTracks(String id, String token) throws UnauthorizedException, BadRequestException, EntityNotFoundException {
+    public List<Track> getArtistTopTracks(String id, String token) throws SpotifyApiException {
         String path = String.join("/", ARTISTS_PATH,id,"top-tracks");
         ArtistTopTracksResponse response = executor.get(path,token,ArtistTopTracksResponse.class);
         return response.getTracks().stream()

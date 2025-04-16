@@ -2,9 +2,7 @@ package com.github.gmarcg00.spotify.integration.playlist;
 
 import com.github.gmarcg00.spotify.config.Config;
 import com.github.gmarcg00.spotify.data.Playlist;
-import com.github.gmarcg00.spotify.exception.BadRequestException;
-import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
-import com.github.gmarcg00.spotify.exception.UnauthorizedException;
+import com.github.gmarcg00.spotify.exception.*;
 import com.github.gmarcg00.spotify.external.api.Executor;
 import com.github.gmarcg00.spotify.service.PlaylistService;
 import com.github.gmarcg00.spotify.service.impl.PlaylistServiceImpl;
@@ -44,7 +42,7 @@ class GetPlaylistIntegrationTest {
     }
 
     @Test
-    void testGetPlaylistSuccessfully() throws UnauthorizedException, BadRequestException, EntityNotFoundException {
+    void testGetPlaylistSuccessfully() throws SpotifyApiException {
         //Given
         mockGetRequest("/playlists/2nnfrwKp4u11FV28iMQxyV",200,"playlist/get_playlist_successfully.json");
 

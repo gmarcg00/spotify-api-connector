@@ -3,9 +3,7 @@ package com.github.gmarcg00.spotify.integration.artist;
 import com.github.gmarcg00.spotify.config.Config;
 import com.github.gmarcg00.spotify.data.Album;
 import com.github.gmarcg00.spotify.data.other.AlbumType;
-import com.github.gmarcg00.spotify.exception.BadRequestException;
-import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
-import com.github.gmarcg00.spotify.exception.UnauthorizedException;
+import com.github.gmarcg00.spotify.exception.*;
 import com.github.gmarcg00.spotify.external.api.Executor;
 import com.github.gmarcg00.spotify.service.ArtistService;
 import com.github.gmarcg00.spotify.service.impl.ArtistServiceImpl;
@@ -57,7 +55,7 @@ class GetArtistAlbumsIntegrationTest {
     }
 
     @Test
-    void testGetArtistAlbumsDefaultRequest() throws UnauthorizedException, BadRequestException, EntityNotFoundException {
+    void testGetArtistAlbumsDefaultRequest() throws SpotifyApiException {
         //Given
         mockGetRequest("/artists/7eLcDZDYHXZCebtQmVFL25/albums",200,"artist/album/get_artist_albums_default_request.json");
 
@@ -70,7 +68,7 @@ class GetArtistAlbumsIntegrationTest {
     }
 
     @Test
-    void testGetArtistAlbumsCustomRequest() throws UnauthorizedException, BadRequestException, EntityNotFoundException {
+    void testGetArtistAlbumsCustomRequest() throws SpotifyApiException {
         //Given
         mockGetRequest("/artists/7eLcDZDYHXZCebtQmVFL25/albums?limit=30&offset=2&include_groups=album,single",200,"artist/album/get_artist_albums_custom_request.json");
         AlbumType[] albumTypes = new AlbumType[2];

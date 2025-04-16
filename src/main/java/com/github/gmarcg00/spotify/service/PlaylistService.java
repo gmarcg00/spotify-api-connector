@@ -1,9 +1,7 @@
 package com.github.gmarcg00.spotify.service;
 
 import com.github.gmarcg00.spotify.data.Playlist;
-import com.github.gmarcg00.spotify.exception.BadRequestException;
-import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
-import com.github.gmarcg00.spotify.exception.UnauthorizedException;
+import com.github.gmarcg00.spotify.exception.*;
 
 /**
  * @author Guillermo Marcos García
@@ -20,5 +18,5 @@ public interface PlaylistService {
      * @throws EntityNotFoundException if no playlist is found
      * @throws UnauthorizedException if the token has expired, is invalid, or is empty
      */
-    Playlist getPlaylist(String id, String token) throws EntityNotFoundException, UnauthorizedException, BadRequestException;
+    Playlist getPlaylist(String id, String token) throws SpotifyApiException;
 }

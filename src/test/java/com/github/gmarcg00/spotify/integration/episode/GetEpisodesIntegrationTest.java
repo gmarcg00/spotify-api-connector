@@ -2,9 +2,7 @@ package com.github.gmarcg00.spotify.integration.episode;
 
 import com.github.gmarcg00.spotify.config.Config;
 import com.github.gmarcg00.spotify.data.Episode;
-import com.github.gmarcg00.spotify.exception.BadRequestException;
-import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
-import com.github.gmarcg00.spotify.exception.UnauthorizedException;
+import com.github.gmarcg00.spotify.exception.*;
 import com.github.gmarcg00.spotify.external.api.Executor;
 import com.github.gmarcg00.spotify.service.EpisodeService;
 import com.github.gmarcg00.spotify.service.impl.EpisodeServiceImpl;
@@ -60,7 +58,7 @@ class GetEpisodesIntegrationTest {
     }
 
     @Test
-    void testGetEpisodesSuccessfully() throws UnauthorizedException, EntityNotFoundException, BadRequestException {
+    void testGetEpisodesSuccessfully() throws SpotifyApiException {
         //Given
         mockGetRequest("/episodes?ids=4eIS8RhRNZXUTiyKL04cQK,5TrEALrPu0wjmaoUyYmENj",200,"episode/get_episodes_successfully.json");
         String [] ids = new String[2];

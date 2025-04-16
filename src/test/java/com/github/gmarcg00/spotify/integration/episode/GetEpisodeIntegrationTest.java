@@ -2,9 +2,7 @@ package com.github.gmarcg00.spotify.integration.episode;
 
 import com.github.gmarcg00.spotify.config.Config;
 import com.github.gmarcg00.spotify.data.Episode;
-import com.github.gmarcg00.spotify.exception.BadRequestException;
-import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
-import com.github.gmarcg00.spotify.exception.UnauthorizedException;
+import com.github.gmarcg00.spotify.exception.*;
 import com.github.gmarcg00.spotify.external.api.Executor;
 import com.github.gmarcg00.spotify.service.EpisodeService;
 import com.github.gmarcg00.spotify.service.impl.EpisodeServiceImpl;
@@ -55,7 +53,7 @@ class GetEpisodeIntegrationTest {
     }
 
     @Test
-    void testGetEpisodeSuccessfully() throws UnauthorizedException, EntityNotFoundException, BadRequestException {
+    void testGetEpisodeSuccessfully() throws SpotifyApiException {
         //Given
         mockGetRequest("/episodes/5TrEALrPu0wjmaoUyYmENj",200,"episode/get_episode_successfully.json");
 

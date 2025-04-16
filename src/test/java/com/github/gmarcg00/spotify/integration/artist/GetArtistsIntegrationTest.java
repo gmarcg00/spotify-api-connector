@@ -2,9 +2,7 @@ package com.github.gmarcg00.spotify.integration.artist;
 
 import com.github.gmarcg00.spotify.config.Config;
 import com.github.gmarcg00.spotify.data.Artist;
-import com.github.gmarcg00.spotify.exception.BadRequestException;
-import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
-import com.github.gmarcg00.spotify.exception.UnauthorizedException;
+import com.github.gmarcg00.spotify.exception.*;
 import com.github.gmarcg00.spotify.external.api.Executor;
 import com.github.gmarcg00.spotify.service.ArtistService;
 import com.github.gmarcg00.spotify.service.impl.ArtistServiceImpl;
@@ -60,7 +58,7 @@ class GetArtistsIntegrationTest {
     }
 
     @Test
-    void testGetArtistsSuccessfully() throws UnauthorizedException, EntityNotFoundException, BadRequestException {
+    void testGetArtistsSuccessfully() throws SpotifyApiException {
         //Given
         mockGetRequest("/artists?ids=7eLcDZDYHXZCebtQmVFL25,2CIMQHirSU0MQqyYHq0eOx",200,"artist/get_artists_successfully.json");
         String[] ids = new String[2];

@@ -1,8 +1,6 @@
 package com.github.gmarcg00.spotify.integration.album;
 
-import com.github.gmarcg00.spotify.exception.BadRequestException;
-import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
-import com.github.gmarcg00.spotify.exception.UnauthorizedException;
+import com.github.gmarcg00.spotify.exception.*;
 import com.github.gmarcg00.spotify.external.api.Executor;
 import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumTracksResponse;
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -51,7 +49,7 @@ class GetAlbumElementsIntegrationTest {
     }
 
     @Test
-    void testGetAlbumTracksSuccessfully() throws UnauthorizedException, EntityNotFoundException, BadRequestException {
+    void testGetAlbumTracksSuccessfully() throws SpotifyApiException {
         //Given
         mockGetRequest("/albums/5VaYKNDJhjfWtghV9UL1Bj/tracks",200,"album/get_album_tracks_successfully.json");
         String path = URL.concat("/5VaYKNDJhjfWtghV9UL1Bj/tracks");
