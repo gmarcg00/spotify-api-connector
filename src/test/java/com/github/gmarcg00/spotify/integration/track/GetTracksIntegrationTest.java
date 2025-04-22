@@ -45,6 +45,13 @@ class GetTracksIntegrationTest {
     }
 
     @Test
+    void testNullParameters(){
+        //When && Then
+        Exception exception = assertThrows(NullPointerException.class, () -> service.getTracks(null,null));
+        assertEquals("object must not be null",exception.getMessage());
+    }
+
+    @Test
     void testGetTracksFailedAuth(){
         //Given
         mockGetRequest("/tracks?ids=1zTzz7nUxA2UxE6NhNTWSH,5Cbo7oz78gqkzV3EAM63VH",401,"generic/failed_auth.json");

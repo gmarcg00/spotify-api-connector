@@ -50,6 +50,7 @@ public class ServiceUtils {
     }
 
     public static String[] combine(String[] arr, String value){
+        Objects.requireNonNull(arr,"object must not be null");
         return Stream.concat(Arrays.stream(arr), Stream.of(value))
                 .toArray(String[]::new);
     }
