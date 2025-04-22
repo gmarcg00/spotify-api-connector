@@ -2,17 +2,17 @@ package com.github.gmarcg00.spotify.service.impl;
 
 import com.github.gmarcg00.spotify.data.Album;
 import com.github.gmarcg00.spotify.data.Track;
-import com.github.gmarcg00.spotify.exception.BadRequestException;
-import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
-import com.github.gmarcg00.spotify.exception.UnauthorizedException;
+import com.github.gmarcg00.spotify.exception.*;
 import com.github.gmarcg00.spotify.external.api.Executor;
 import com.github.gmarcg00.spotify.external.api.mapper.AlbumMapper;
 import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumListResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumTracksResponse;
 import com.github.gmarcg00.spotify.service.AlbumService;
+import com.github.gmarcg00.spotify.service.utils.ServiceUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.github.gmarcg00.spotify.config.Config.ALBUMS_PATH;
 import static com.github.gmarcg00.spotify.service.utils.BuildUriHelper.buildSimpleGetListUri;
@@ -32,23 +32,27 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public Album getAlbum(String id, String token) throws EntityNotFoundException, UnauthorizedException, BadRequestException {
+    public Album getAlbum(String id, String token) throws SpotifyApiException {
+        ServiceUtils.checkNullValues(id,token);
         String path = String.join("/",ALBUMS_PATH,id);
         AlbumResponse response = executor.get(path,token,AlbumResponse.class);
         return AlbumMapper.toEntity(response);
     }
 
     @Override
-    public List<Album> getAlbums(String[] ids, String token) throws EntityNotFoundException, UnauthorizedException, BadRequestException {
+    public List<Album> getAlbums(String[] ids, String token) throws SpotifyApiException {
+        ServiceUtils.checkNullValues(ServiceUtils.combine(ids,token));
         String path = buildSimpleGetListUri(ALBUMS_PATH,ids);
         AlbumListResponse response = executor.get(path,token, AlbumListResponse.class);
         return response.getAlbums().stream()
+                .filter(Objects::nonNull)
                 .map(AlbumMapper::toEntity)
                 .toList();
     }
 
     @Override
-    public List<Track> getAlbumTracks(String id, String limit, String offset, String token) throws UnauthorizedException, EntityNotFoundException, BadRequestException {
+    public List<Track> getAlbumTracks(String id, String limit, String offset, String token) throws SpotifyApiException {
+        ServiceUtils.checkNullValues(id,token);
         String path = String.join("/",ALBUMS_PATH,id,"tracks");
         path = addQueryParams(path,limit,offset);
         AlbumTracksResponse response = executor.get(path,token,AlbumTracksResponse.class);

@@ -18,6 +18,7 @@ public class Executor {
     private static final String CONTENT_TYPE_HEADER = "Content-Type";
     private static final String BEARER_PREFIX = "Bearer ";
     private static final String APPLICATION_URL_ENCODED = "application/x-www-form-urlencoded";
+    private static final String RATE_LIMIT_EXCEPTION_MESSAGE = "Rate limit exceeded. Please try it again later.";
 
     private final RequestClient client;
 
@@ -25,7 +26,7 @@ public class Executor {
         this.client = RequestClient.getInstance();
     }
 
-    public <T> T get(String path, String token, Class<T> responseType) throws UnauthorizedException, EntityNotFoundException, BadRequestException {
+    public <T> T get(String path, String token, Class<T> responseType) throws SpotifyApiException{
         HttpRequest request = createGetRequest(path,token);
         HttpResponse<String> response = doRequest(request,HttpResponse.BodyHandlers.ofString());
         checkResponse(response);
@@ -69,7 +70,7 @@ public class Executor {
         }
     }
 
-    private void checkResponse(HttpResponse<String> response) throws EntityNotFoundException, UnauthorizedException, BadRequestException {
+    private void checkResponse(HttpResponse<String> response) throws EntityNotFoundException, UnauthorizedException, BadRequestException, RateLimitException {
         if(response.statusCode() == HttpURLConnection.HTTP_OK) return;
         SpotifyApiErrorResponse errorResponse = GlobalMapper.getInstance().map(response.body(),SpotifyApiErrorResponse.class);
         String errorMessage = errorResponse.getError().getMessage();
@@ -80,6 +81,8 @@ public class Executor {
                 throw new BadRequestException(errorMessage);
             case HttpURLConnection.HTTP_NOT_FOUND:
                 throw new EntityNotFoundException(errorMessage);
+            case 429:
+                throw new RateLimitException(RATE_LIMIT_EXCEPTION_MESSAGE);
             default:
                 break;
         }

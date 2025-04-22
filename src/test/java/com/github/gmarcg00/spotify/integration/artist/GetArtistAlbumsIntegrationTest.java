@@ -3,9 +3,7 @@ package com.github.gmarcg00.spotify.integration.artist;
 import com.github.gmarcg00.spotify.config.Config;
 import com.github.gmarcg00.spotify.data.Album;
 import com.github.gmarcg00.spotify.data.other.AlbumType;
-import com.github.gmarcg00.spotify.exception.BadRequestException;
-import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
-import com.github.gmarcg00.spotify.exception.UnauthorizedException;
+import com.github.gmarcg00.spotify.exception.*;
 import com.github.gmarcg00.spotify.external.api.Executor;
 import com.github.gmarcg00.spotify.service.ArtistService;
 import com.github.gmarcg00.spotify.service.impl.ArtistServiceImpl;
@@ -47,9 +45,36 @@ class GetArtistAlbumsIntegrationTest {
     }
 
     @Test
+    void testGetArtistAlbumsWithNullParameters(){
+        //When && Then
+        Exception exception = assertThrows(NullPointerException.class, () -> service.getArtistAlbums(null,new AlbumType[0],"","",null));
+        assertEquals("object must not be null",exception.getMessage());
+    }
+
+    @Test
+    void testGetArtistAlbumsFailedAuth(){
+        //Given
+        mockGetRequest("/artists/7eLcDZDYHXZCebtQmVFL29/albums",401,"generic/failed_auth.json");
+
+        //When && Then
+        Exception exception =  assertThrows(UnauthorizedException.class, () -> service.getArtistAlbums("7eLcDZDYHXZCebtQmVFL29",new AlbumType[0],"","",""));
+        assertEquals("No token provided",exception.getMessage());
+    }
+
+    @Test
+    void testGetArtistAlbumsInvalidIdFormat(){
+        //Given
+        mockGetRequest("/artists/7eLcDZDYHXZCebtQmVFL2/albums",400,"generic/invalid_resource_id.json");
+
+        //When && Then
+        Exception exception = assertThrows(BadRequestException.class , () -> service.getArtistAlbums("7eLcDZDYHXZCebtQmVFL2",new AlbumType[0],"","","token"));
+        assertEquals("Invalid base62 id",exception.getMessage());
+    }
+
+    @Test
     void testGetArtistAlbumsArtistNotFound(){
         //Given
-        mockGetRequest("/artists/7eLcDZDYHXZCebtQmVFL24/albums",404,"artist/album/artist_not_found.json");
+        mockGetRequest("/artists/7eLcDZDYHXZCebtQmVFL24/albums",404,"generic/resource_not_found.json");
 
         //When && Then
         Exception exception = assertThrows(EntityNotFoundException.class, () -> service.getArtistAlbums("7eLcDZDYHXZCebtQmVFL24", new AlbumType[]{},"","","token"));
@@ -57,7 +82,7 @@ class GetArtistAlbumsIntegrationTest {
     }
 
     @Test
-    void testGetArtistAlbumsDefaultRequest() throws UnauthorizedException, BadRequestException, EntityNotFoundException {
+    void testGetArtistAlbumsDefaultRequest() throws SpotifyApiException {
         //Given
         mockGetRequest("/artists/7eLcDZDYHXZCebtQmVFL25/albums",200,"artist/album/get_artist_albums_default_request.json");
 
@@ -70,7 +95,7 @@ class GetArtistAlbumsIntegrationTest {
     }
 
     @Test
-    void testGetArtistAlbumsCustomRequest() throws UnauthorizedException, BadRequestException, EntityNotFoundException {
+    void testGetArtistAlbumsCustomRequest() throws SpotifyApiException {
         //Given
         mockGetRequest("/artists/7eLcDZDYHXZCebtQmVFL25/albums?limit=30&offset=2&include_groups=album,single",200,"artist/album/get_artist_albums_custom_request.json");
         AlbumType[] albumTypes = new AlbumType[2];

@@ -61,6 +61,4 @@ public class TrackMapper {
                 .uri(artist.getUri())
                 .build();
     }
-
-
 }
