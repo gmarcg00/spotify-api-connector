@@ -45,7 +45,7 @@ class GetTracksIntegrationTest {
     }
 
     @Test
-    void testNullParameters(){
+    void testGetTracksWithNullParameters(){
         //When && Then
         Exception exception = assertThrows(NullPointerException.class, () -> service.getTracks(null,null));
         assertEquals("object must not be null",exception.getMessage());

@@ -72,7 +72,7 @@ class GetTrackIntegrationTest {
     @Test
     void testGetTrackNotFound(){
         //Given
-        mockGetRequest("/tracks/1zTzz7nUxA2UxE6NhNTWSFs",404,"track/get_track_not_found.json");
+        mockGetRequest("/tracks/1zTzz7nUxA2UxE6NhNTWSFs",404,"generic/resource_not_found.json");
 
         //When && Then
         Exception exception = assertThrows(EntityNotFoundException.class, () -> service.getTrack("1zTzz7nUxA2UxE6NhNTWSFs","token"));

@@ -43,19 +43,36 @@ class GetArtistIntegrationTest {
     }
 
     @Test
-    void testGetArtistExpiredAccessToken(){
+    void testGetArtistNullParameters(){
+        //When && Then
+        Exception exception = assertThrows(NullPointerException.class , () -> service.getArtist(null,null));
+        assertEquals("object must not be null",exception.getMessage());
+    }
+
+    @Test
+    void testGetArtistFailedAuth(){
         //Given
-        mockGetRequest("/artists/4aawyAB9vmqN3uQ7FjRGTy",401,"artist/get_artist_without_permissions.json");
+        mockGetRequest("/artists/4aawyAB9vmqN3uQ7FjRGTy",401,"generic/failed_auth.json");
 
         //When && Then
         UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> service.getArtist("4aawyAB9vmqN3uQ7FjRGTy","token"));
-        assertEquals("The access token expired",exception.getMessage());
+        assertEquals("No token provided",exception.getMessage());
+    }
+
+    @Test
+    void testGetArtistInvalidId(){
+        //Given
+        mockGetRequest("/artists/4aawyAB9vmqN3uQ7FjRGTyH",400,"generic/invalid_resource_id.json");
+
+        //When && Then
+        Exception exception = assertThrows(BadRequestException.class , () -> service.getArtist("4aawyAB9vmqN3uQ7FjRGTyH","token"));
+        assertEquals("Invalid base62 id",exception.getMessage());
     }
 
     @Test
     void testGetArtistNotFound(){
         //Given
-        mockGetRequest("/artists/4aawyAB9vmqN3uQ7FjRhhh",404,"artist/get_artist_not_found.json");
+        mockGetRequest("/artists/4aawyAB9vmqN3uQ7FjRhhh",404,"generic/resource_not_found.json");
 
         //When && Then
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> service.getArtist("4aawyAB9vmqN3uQ7FjRhhh","token"));
@@ -65,10 +82,10 @@ class GetArtistIntegrationTest {
     @Test
     void testGetArtistSuccessfully() throws SpotifyApiException {
         //Given
-        mockGetRequest("/artists/4aawyAB9vmqN3uQ7FjRGTy",200,"artist/get_artist_successfully.json");
+        mockGetRequest("/artists/4aawyAB9vmqN3uQ7FjRGTM",200,"artist/get_artist_successfully.json");
 
         //When
-        Artist result = service.getArtist("4aawyAB9vmqN3uQ7FjRGTy","token");
+        Artist result = service.getArtist("4aawyAB9vmqN3uQ7FjRGTM","token");
 
         //Then
         assertNotNull(result);

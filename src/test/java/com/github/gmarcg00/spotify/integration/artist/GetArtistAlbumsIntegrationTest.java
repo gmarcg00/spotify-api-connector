@@ -45,9 +45,36 @@ class GetArtistAlbumsIntegrationTest {
     }
 
     @Test
+    void testGetArtistAlbumsWithNullParameters(){
+        //When && Then
+        Exception exception = assertThrows(NullPointerException.class, () -> service.getArtistAlbums(null,new AlbumType[0],"","",null));
+        assertEquals("object must not be null",exception.getMessage());
+    }
+
+    @Test
+    void testGetArtistAlbumsFailedAuth(){
+        //Given
+        mockGetRequest("/artists/7eLcDZDYHXZCebtQmVFL29/albums",401,"generic/failed_auth.json");
+
+        //When && Then
+        Exception exception =  assertThrows(UnauthorizedException.class, () -> service.getArtistAlbums("7eLcDZDYHXZCebtQmVFL29",new AlbumType[0],"","",""));
+        assertEquals("No token provided",exception.getMessage());
+    }
+
+    @Test
+    void testGetArtistAlbumsInvalidIdFormat(){
+        //Given
+        mockGetRequest("/artists/7eLcDZDYHXZCebtQmVFL2/albums",400,"generic/invalid_resource_id.json");
+
+        //When && Then
+        Exception exception = assertThrows(BadRequestException.class , () -> service.getArtistAlbums("7eLcDZDYHXZCebtQmVFL2",new AlbumType[0],"","","token"));
+        assertEquals("Invalid base62 id",exception.getMessage());
+    }
+
+    @Test
     void testGetArtistAlbumsArtistNotFound(){
         //Given
-        mockGetRequest("/artists/7eLcDZDYHXZCebtQmVFL24/albums",404,"artist/album/artist_not_found.json");
+        mockGetRequest("/artists/7eLcDZDYHXZCebtQmVFL24/albums",404,"generic/resource_not_found.json");
 
         //When && Then
         Exception exception = assertThrows(EntityNotFoundException.class, () -> service.getArtistAlbums("7eLcDZDYHXZCebtQmVFL24", new AlbumType[]{},"","","token"));

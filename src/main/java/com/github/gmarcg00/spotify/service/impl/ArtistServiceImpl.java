@@ -12,9 +12,11 @@ import com.github.gmarcg00.spotify.external.api.model.response.artist.ArtistList
 import com.github.gmarcg00.spotify.external.api.model.response.artist.ArtistResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.artist.ArtistTopTracksResponse;
 import com.github.gmarcg00.spotify.service.ArtistService;
+import com.github.gmarcg00.spotify.service.utils.ServiceUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static com.github.gmarcg00.spotify.config.Config.ARTISTS_PATH;
 import static com.github.gmarcg00.spotify.service.utils.BuildUriHelper.buildSimpleGetListUri;
@@ -36,6 +38,7 @@ public class ArtistServiceImpl implements ArtistService {
 
     @Override
     public Artist getArtist(String id, String token) throws SpotifyApiException {
+        ServiceUtils.checkNullValues(id,token);
         String path = String.join("/",ARTISTS_PATH,id);
         ArtistResponse response = executor.get(path,token,ArtistResponse.class);
         return ArtistMapper.toEntity(response);
@@ -43,15 +46,19 @@ public class ArtistServiceImpl implements ArtistService {
 
     @Override
     public List<Artist> getArtists(String[] ids, String token) throws SpotifyApiException {
+        ServiceUtils.checkNullValues(ServiceUtils.combine(ids,token));
         String path = buildSimpleGetListUri(ARTISTS_PATH,ids);
         ArtistListResponse response = executor.get(path,token, ArtistListResponse.class);
         return response.getArtists().stream()
+                .filter(Objects::nonNull)
                 .map(ArtistMapper::toEntity)
                 .toList();
     }
 
     @Override
     public List<Album> getArtistAlbums(String id, AlbumType[] albumTypes, String limit, String offset, String token) throws SpotifyApiException{
+        ServiceUtils.checkNullValues(id,token);
+        Objects.requireNonNull(albumTypes,"object must not be null");
         String path = String.join("/", ARTISTS_PATH,id,"albums");
         String types = String.join(",", Arrays.stream(albumTypes)
                 .map(AlbumType::name)
@@ -60,12 +67,14 @@ public class ArtistServiceImpl implements ArtistService {
         path = addQueryParams(path,limit,offset,types);
         ArtistAlbumsResponse response = executor.get(path,token,ArtistAlbumsResponse.class);
         return response.getItems().stream()
+                .filter(Objects::nonNull)
                 .map(ArtistMapper::toEntity)
                 .toList();
     }
 
     @Override
     public List<Track> getArtistTopTracks(String id, String token) throws SpotifyApiException {
+        ServiceUtils.checkNullValues(id,token);
         String path = String.join("/", ARTISTS_PATH,id,"top-tracks");
         ArtistTopTracksResponse response = executor.get(path,token,ArtistTopTracksResponse.class);
         return response.getTracks().stream()

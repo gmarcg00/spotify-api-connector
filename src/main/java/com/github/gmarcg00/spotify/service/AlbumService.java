@@ -47,8 +47,8 @@ public interface AlbumService {
      * Returns a list of {@link Track Track} from the requested {@link Album album}.
      *
      * @param id {@link Album Album} identifier.
-     * @param limit the maximum number of items to return. Default: 20, Minimum: 1, Maximum: 50.
-     * @param offset the index of the first item to return. Default: 0.
+     * @param limit the maximum number of items to return. Default: 20, Minimum: 1, Maximum: 50. If not specified, pass {@code null} or an empty string.
+     * @param offset the index of the first item to return. Default: 0. If not specified, pass {@code null} or an empty string.
      * @param token access token to retrieve Spotify API data.
      *
      * @return a list of {@link Track Track} from the requested {@link Album album}
