@@ -35,10 +35,10 @@ public interface TrackService {
      *
      * @return a list of {@link Track Tracks} corresponding to the requested identifiers
      *
-     * @throws UnauthorizedException if the token has expired, is invalid, or is empty
-     * @throws BadRequestException if track identifier has an incorrect format
+     * @throws UnauthorizedException if the token has expired, is invalid, or is empty.
+     * @throws BadRequestException if a track identifier has an incorrect format.
      * @throws RateLimitException if the app exceeds the rate limit. Spotify's API rate limit is calculated based on the number of calls that your app makes to Spotify in a rolling 30-second window.
-     * @throws NullPointerException if ids or token are null
+     * @throws NullPointerException if ids or token are null.
      */
     List<Track> getTracks(String[] ids, String token) throws SpotifyApiException;
 

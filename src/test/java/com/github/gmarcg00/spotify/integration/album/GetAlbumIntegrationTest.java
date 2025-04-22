@@ -43,22 +43,49 @@ class GetAlbumIntegrationTest {
     }
 
     @Test
-    void testGetAlbumNotFound(){
+    void testGetAlbumWithNullParameters(){
+        //When && Then
+        Exception exception = assertThrows(NullPointerException.class , () -> service.getAlbum(null,null));
+        assertEquals("object must not be null",exception.getMessage());
+    }
+
+    @Test
+    void testGetAlbumFailedAuth(){
         //Given
-        mockGetRequest("/albums/4aawyAB9vmqN3uQ7FjRGTyA",400,"album/get_album_not_found.json");
+        mockGetRequest("/albums/4aawyAB9vmqN3uQ7FjRGTyM",401,"generic/failed_auth.json");
 
         //When && Then
-        Exception exception = assertThrows(BadRequestException.class, () -> service.getAlbum("4aawyAB9vmqN3uQ7FjRGTyA","token"));
+        Exception exception = assertThrows(UnauthorizedException.class , () -> service.getAlbum("4aawyAB9vmqN3uQ7FjRGTyM","not valid"));
+        assertEquals("No token provided",exception.getMessage());
+    }
+
+    @Test
+    void testGetAlbumInvalidId(){
+        //Given
+        mockGetRequest("/albums/4aawyAB9vmqN3uQ7FjRGTy",400,"generic/invalid_resource_id.json");
+
+        //When && Then
+        Exception exception = assertThrows(BadRequestException.class, () -> service.getAlbum("4aawyAB9vmqN3uQ7FjRGTy","token"));
         assertEquals("Invalid base62 id", exception.getMessage());
+    }
+
+    @Test
+    void testGetAlbumNotFound(){
+        //Given
+        mockGetRequest("/albums/4aawyAB9vmqN3uQ7FjRGTyS",404,"generic/resource_not_found.json");
+
+        //When && Then
+        Exception exception = assertThrows(EntityNotFoundException.class, () -> service.getAlbum("4aawyAB9vmqN3uQ7FjRGTyS","token"));
+        assertEquals("Resource not found",exception.getMessage());
     }
 
     @Test
     void testGetAlbumSuccessfully() throws SpotifyApiException {
         //Given
-        mockGetRequest("/albums/4aawyAB9vmqN3uQ7FjRGTy",200,"album/get_album_successfully.json");
+        mockGetRequest("/albums/4aawyAB9vmqN3uQ7FjRGTyK",200,"album/get_album_successfully.json");
 
         //When
-        Album response = service.getAlbum("4aawyAB9vmqN3uQ7FjRGTy","token");
+        Album response = service.getAlbum("4aawyAB9vmqN3uQ7FjRGTyK","token");
 
         //Then
         assertNotNull(response);
