@@ -24,7 +24,7 @@ public class AlbumMapper {
                 .type(response.getType())
                 .uri(response.getUri())
                 .artists(response.getArtists().stream().map(AlbumMapper::getArtist).toList())
-                .tracks(response.getTracks().getItems().stream().map(AlbumMapper::getTrack).toList())
+                .tracks(response.getTracks() != null ? response.getTracks().getItems().stream().map(AlbumMapper::getTrack).toList() : null)
                 .copyrights(response.getCopyrights())
                 .popularity(response.getPopularity())
                 .build();

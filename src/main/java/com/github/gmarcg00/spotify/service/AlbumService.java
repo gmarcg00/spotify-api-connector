@@ -59,4 +59,20 @@ public interface AlbumService {
      * @throws NullPointerException if id or token are null.
      */
     List<Track> getAlbumTracks(String id, String limit, String offset, String token) throws SpotifyApiException;
+
+    /**
+     * Returns a list of the latest {@link Album Album}
+     *
+     * @param limit the maximum number of items to return. Default: 20, Minimum: 1, Maximum: 50. If not specified, pass {@code null} or an empty string.
+     * @param offset the index of the first item to return. Default: 0. If not specified, pass {@code null} or an empty string.
+     * @param token access token to retrieve Spotify API data.
+     *
+     * @return a list of the latest {@link Album Album}
+     *
+     * @throws UnauthorizedException if the token has expired, is invalid, or is empty.
+     * @throws BadRequestException if limit or offset values are not allowed.
+     * @throws RateLimitException if the app exceeds the rate limit. Spotify's API rate limit is calculated based on the number of calls that your app makes to Spotify in a rolling 30-second window.
+     * @throws NullPointerException if token is null.
+     */
+    List<Album> getNewReleases(String limit, String offset, String token) throws SpotifyApiException;
 }

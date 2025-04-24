@@ -6,6 +6,7 @@ import com.github.gmarcg00.spotify.exception.*;
 import com.github.gmarcg00.spotify.external.api.Executor;
 import com.github.gmarcg00.spotify.external.api.mapper.AlbumMapper;
 import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumListResponse;
+import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumNewReleasesResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumResponse;
 import com.github.gmarcg00.spotify.external.api.model.response.album.AlbumTracksResponse;
 import com.github.gmarcg00.spotify.service.AlbumService;
@@ -14,6 +15,7 @@ import com.github.gmarcg00.spotify.service.utils.ServiceUtils;
 import java.util.List;
 import java.util.Objects;
 
+import static com.github.gmarcg00.spotify.config.Config.ALBUMS_NEW_RELEASES_PATH;
 import static com.github.gmarcg00.spotify.config.Config.ALBUMS_PATH;
 import static com.github.gmarcg00.spotify.service.utils.BuildUriHelper.buildSimpleGetListUri;
 import static com.github.gmarcg00.spotify.service.utils.ServiceUtils.addQueryParams;
@@ -57,6 +59,16 @@ public class AlbumServiceImpl implements AlbumService {
         path = addQueryParams(path,limit,offset);
         AlbumTracksResponse response = executor.get(path,token,AlbumTracksResponse.class);
         return response.getItems().stream()
+                .map(AlbumMapper::toEntity)
+                .toList();
+    }
+
+    @Override
+    public List<Album> getNewReleases(String limit, String offset, String token) throws SpotifyApiException {
+        ServiceUtils.checkNullValues(token);
+        String path = addQueryParams(ALBUMS_NEW_RELEASES_PATH,limit,offset);
+        AlbumNewReleasesResponse response = executor.get(path,token, AlbumNewReleasesResponse.class);
+        return response.getAlbums().getItems().stream()
                 .map(AlbumMapper::toEntity)
                 .toList();
     }
