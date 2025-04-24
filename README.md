@@ -8,7 +8,6 @@ A robust, reusable, and modular **Java library** for interacting with the **Spot
 ## ✨ Features
 
 - 🎵 **Retrieve Spotify Data:** Fetch tracks, albums, artists, and playlists effortlessly.
-- 🔑 **Authentication Support:** Handle OAuth 2.0 authentication with Spotify API.
 - ⚡ **Easy Integration:** Simplified API calls with built-in request handling.
 - 🔍 **Search Functionality:** Perform searches for tracks, albums, and artists.
 - 📡 **Real-Time Fetching:** Get up-to-date music data directly from Spotify.
