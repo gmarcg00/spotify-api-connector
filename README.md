@@ -29,7 +29,7 @@ Add the dependency to your `pom.xml`:
 ```xml
 <dependency>
     <groupId>com.github.gmarcg00.spotify</groupId>
-    <artifactId>spotify-wrapper</artifactId>
+    <artifactId>spotify-api-connector</artifactId>
     <version>1.0.0</version>
 </dependency>
 ```
