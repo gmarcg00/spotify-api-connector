@@ -60,3 +60,5 @@ playlists: https://api.spotify.com/v1/playlists
 markets: https://api.spotify.com/v1/markets
 accessToken: https://accounts.spotify.com/api/token
 ```
+
+📚 [Browse the JavaDoc online](https://tuusuario.github.io/tu-repo/)
