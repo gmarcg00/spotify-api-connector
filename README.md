@@ -36,7 +36,7 @@ Add the dependency to your `pom.xml`:
 </dependency>
 ```
 
-## ℹ️ Important Notes
+## 📘 Important Notes
 
 ### 🔐 Authentication Scope
 
