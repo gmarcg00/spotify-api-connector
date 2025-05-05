@@ -1,0 +1,8 @@
+artists: https://api.spotify.com/v1/artists
+albums: https://api.spotify.com/v1/albums
+albumsNewReleases: https://api.spotify.com/v1/browse/new-releases
+episodes: https://api.spotify.com/v1/episodes
+tracks: https://api.spotify.com/v1/tracks
+playlists: https://api.spotify.com/v1/playlists
+markets: https://api.spotify.com/v1/markets
+accessToken: https://accounts.spotify.com/api/token

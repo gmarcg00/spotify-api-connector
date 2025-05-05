@@ -1,42 +1,36 @@
 package com.github.gmarcg00.spotify.external.api;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.gmarcg00.spotify.RequestClient;
-import com.github.gmarcg00.spotify.external.api.model.SpotifyApiErrorResponse;
-import com.github.gmarcg00.spotify.exception.EntityNotFoundException;
-import com.github.gmarcg00.spotify.exception.InternalServerException;
-import com.github.gmarcg00.spotify.exception.NetworkConnectionException;
-import com.github.gmarcg00.spotify.exception.UnauthorizedException;
-import com.github.gmarcg00.spotify.utils.AbstractJsonBodyHandler;
+import com.github.gmarcg00.spotify.exception.*;
+import com.github.gmarcg00.spotify.external.api.model.exception.SpotifyApiErrorResponse;
+import com.github.gmarcg00.spotify.external.api.model.exception.SpotifyAuthErrorResponse;
 import com.github.gmarcg00.spotify.utils.GlobalMapper;
-import com.github.gmarcg00.spotify.utils.JsonListBodyHandler;
-import com.github.gmarcg00.spotify.utils.JsonObjectBodyHandler;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
 
-public class Executor<T> {
+public class Executor {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String CONTENT_TYPE_HEADER = "Content-Type";
     private static final String BEARER_PREFIX = "Bearer ";
+    private static final String APPLICATION_URL_ENCODED = "application/x-www-form-urlencoded";
+    private static final String RATE_LIMIT_EXCEPTION_MESSAGE = "Rate limit exceeded. Please try it again later.";
 
     private final RequestClient client;
-    private final String path;
 
-    public Executor(String path){
+    public Executor(){
         this.client = RequestClient.getInstance();
-        this.path = path;
     }
 
-    public T get(String id, String market, String token, Class<T> type) throws EntityNotFoundException, UnauthorizedException {
-        HttpRequest request = createGetRequest(createPath(id,market),token);
-        HttpResponse<T> response = doGet(request,new JsonObjectBodyHandler<>(type));
-        checkResponse(response,id);
-        return response.body();
+    public <T> T get(String path, String token, Class<T> responseType) throws SpotifyApiException{
+        HttpRequest request = createGetRequest(path,token);
+        HttpResponse<String> response = doRequest(request,HttpResponse.BodyHandlers.ofString());
+        checkResponse(response);
+        return GlobalMapper.getInstance().map(response.body(),responseType);
     }
 
     private HttpRequest createGetRequest(String path,String token){
@@ -47,12 +41,25 @@ public class Executor<T> {
                 .build();
     }
 
-    private String createPath(String id, String market) {
-        String basePath = String.join("/",path, id);
-        return (market != null && !market.isEmpty()) ? basePath + "?market=" + market : basePath;
+    public <T> T post(String path, String body, Class<T> responseType) throws BadRequestException {
+        HttpRequest request = createPostRequest(path,body);
+        HttpResponse<String> response = doRequest(request,HttpResponse.BodyHandlers.ofString());
+        if(response.statusCode() == 400){
+            SpotifyAuthErrorResponse responseError = GlobalMapper.getInstance().map(response.body(),SpotifyAuthErrorResponse.class);
+            throw new BadRequestException(responseError.getErrorDescription());
+        }
+        return GlobalMapper.getInstance().map(response.body(),responseType);
     }
 
-    private HttpResponse<T> doGet(HttpRequest request, AbstractJsonBodyHandler<T> bodyHandler){
+    private HttpRequest createPostRequest(String path, String body){
+        return HttpRequest.newBuilder()
+                .uri(URI.create(path))
+                .header(CONTENT_TYPE_HEADER, APPLICATION_URL_ENCODED)
+                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .build();
+    }
+
+    private HttpResponse<String> doRequest(HttpRequest request, HttpResponse.BodyHandler<String> bodyHandler){
         try {
             return client.getClient().send(request, bodyHandler);
         } catch (IOException e) {
@@ -63,41 +70,21 @@ public class Executor<T> {
         }
     }
 
-    private void checkResponse(HttpResponse<T> response, String id) throws EntityNotFoundException, UnauthorizedException {
+    private void checkResponse(HttpResponse<String> response) throws EntityNotFoundException, UnauthorizedException, BadRequestException, RateLimitException {
+        if(response.statusCode() == HttpURLConnection.HTTP_OK) return;
+        SpotifyApiErrorResponse errorResponse = GlobalMapper.getInstance().map(response.body(),SpotifyApiErrorResponse.class);
+        String errorMessage = errorResponse.getError().getMessage();
         switch (response.statusCode()){
             case HttpURLConnection.HTTP_UNAUTHORIZED :
-                throw new UnauthorizedException("INVALID_ACCESS_TOKEN");
-            case HttpURLConnection.HTTP_BAD_REQUEST, HttpURLConnection.HTTP_NOT_FOUND:
-                throw new EntityNotFoundException(String.format("Entity with id: %s not found",id));
+                throw new UnauthorizedException(errorMessage);
+            case HttpURLConnection.HTTP_BAD_REQUEST:
+                throw new BadRequestException(errorMessage);
+            case HttpURLConnection.HTTP_NOT_FOUND:
+                throw new EntityNotFoundException(errorMessage);
+            case 429:
+                throw new RateLimitException(RATE_LIMIT_EXCEPTION_MESSAGE);
             default:
                 break;
-        }
-    }
-
-    public List<T> gets(String[] ids, String token) throws EntityNotFoundException {
-        String idParam = String.join(",", ids);
-        HttpRequest request = createGetRequest(path + "?ids=" + idParam ,token);
-        HttpResponse<List<T>> response = doGetWithListResponse(request,new JsonListBodyHandler<>(new TypeReference<>() {}));
-        checkResponseList(response);
-        return response.body();
-    }
-
-    private void checkResponseList(HttpResponse<List<T>> response) throws EntityNotFoundException{
-        if(HttpURLConnection.HTTP_BAD_REQUEST == response.statusCode()){
-            SpotifyApiErrorResponse errorResponse = GlobalMapper.getInstance()
-                    .map(response.body().toString(),SpotifyApiErrorResponse.class);
-            throw new EntityNotFoundException(errorResponse.getError().getMessage());
-        }
-    }
-
-    private HttpResponse<List<T>> doGetWithListResponse(HttpRequest request, AbstractJsonBodyHandler<List<T>> bodyHandler) {
-        try {
-            return client.getClient().send(request, bodyHandler);
-        } catch (IOException e) {
-            throw new NetworkConnectionException(e.getMessage());
-        } catch (InterruptedException e){
-            Thread.currentThread().interrupt();
-            throw new InternalServerException(e.getMessage());
         }
     }
 
