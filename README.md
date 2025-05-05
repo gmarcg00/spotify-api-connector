@@ -61,4 +61,4 @@ markets: https://api.spotify.com/v1/markets
 accessToken: https://accounts.spotify.com/api/token
 ```
 
-📚 [Browse the JavaDoc online](https://tuusuario.github.io/tu-repo/)
+📚 [Browse the JavaDoc online]([https://tuusuario.github.io/tu-repo/](https://gmarcg00.github.io/spotify-api-connector/))
