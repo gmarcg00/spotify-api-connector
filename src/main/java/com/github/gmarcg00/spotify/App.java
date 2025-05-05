@@ -1,9 +1,8 @@
 package com.github.gmarcg00.spotify;
 
-/**
- * Hello world!
- */
+import com.github.gmarcg00.spotify.exception.SpotifyApiException;
+
 public class App {
 
-    public static void main(String[] args)  {}
+    public static void main(String[] args) throws SpotifyApiException {}
 }

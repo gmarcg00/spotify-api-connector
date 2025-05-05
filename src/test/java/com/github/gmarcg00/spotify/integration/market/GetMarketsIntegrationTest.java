@@ -1,6 +1,5 @@
 package com.github.gmarcg00.spotify.integration.market;
 
-import com.github.gmarcg00.spotify.config.Config;
 import com.github.gmarcg00.spotify.exception.SpotifyApiException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
 import com.github.gmarcg00.spotify.external.api.Executor;
@@ -20,8 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GetMarketsIntegrationTest {
 
-    private static final String URL = "http://localhost:8080/markets";
-
     private static WireMockServer wireMockServer;
     private MarketService service;
 
@@ -29,7 +26,6 @@ class GetMarketsIntegrationTest {
     static void startWiremock(){
         wireMockServer = getServer();
         wireMockServer.start();
-        Config.MARKETS_PATH = URL;
     }
 
     @AfterAll

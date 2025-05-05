@@ -1,6 +1,5 @@
 package com.github.gmarcg00.spotify.integration.album;
 
-import com.github.gmarcg00.spotify.config.Config;
 import com.github.gmarcg00.spotify.data.Album;
 import com.github.gmarcg00.spotify.exception.SpotifyApiException;
 import com.github.gmarcg00.spotify.exception.UnauthorizedException;
@@ -21,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GetAlbumNewReleasesIntegrationTest {
 
-    private static final String URL = "http://localhost:8080/browse/new-releases";
-
     private static WireMockServer wireMockServer;
     private AlbumService service;
 
@@ -30,7 +27,6 @@ class GetAlbumNewReleasesIntegrationTest {
     static void startWiremock(){
         wireMockServer = getServer();
         wireMockServer.start();
-        Config.ALBUMS_NEW_RELEASES_PATH = URL;
     }
 
     @AfterAll

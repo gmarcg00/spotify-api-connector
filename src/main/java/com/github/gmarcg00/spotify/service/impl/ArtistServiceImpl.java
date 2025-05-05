@@ -22,7 +22,6 @@ import static com.github.gmarcg00.spotify.config.Config.ARTISTS_PATH;
 import static com.github.gmarcg00.spotify.service.utils.BuildUriHelper.buildSimpleGetListUri;
 import static com.github.gmarcg00.spotify.service.utils.ServiceUtils.addQueryParams;
 
-
 /**
  * @author Guillermo Marcos García
  *
