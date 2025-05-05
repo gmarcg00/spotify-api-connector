@@ -29,7 +29,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String body = "grant_type=" + URLEncoder.encode("client_credentials", StandardCharsets.UTF_8)
                 + "&client_id=" + URLEncoder.encode(clientId, StandardCharsets.UTF_8)
                 + "&client_secret=" + URLEncoder.encode(clientSecret, StandardCharsets.UTF_8);
-        AccessTokenResponse response = executor.post(ACCESS_TOKEN_PATH,body, AccessTokenResponse.class);
+        AccessTokenResponse response = executor.post(ACCESS_TOKEN_PATH,body,AccessTokenResponse.class);
         return AuthenticationMapper.toEntity(response);
     }
 }

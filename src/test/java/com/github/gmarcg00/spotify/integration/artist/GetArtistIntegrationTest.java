@@ -1,6 +1,5 @@
 package com.github.gmarcg00.spotify.integration.artist;
 
-import com.github.gmarcg00.spotify.config.Config;
 import com.github.gmarcg00.spotify.data.Artist;
 import com.github.gmarcg00.spotify.exception.*;
 import com.github.gmarcg00.spotify.external.api.Executor;
@@ -19,8 +18,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GetArtistIntegrationTest {
 
-    private static final String URL = "http://localhost:8080/artists";
-
     private static WireMockServer wireMockServer;
     private ArtistService service;
 
@@ -28,7 +25,6 @@ class GetArtistIntegrationTest {
     static void startWiremock(){
         wireMockServer = getServer();
         wireMockServer.start();
-        Config.ARTISTS_PATH = URL;
     }
 
     @AfterAll

@@ -1,6 +1,5 @@
 package com.github.gmarcg00.spotify.integration.authentication;
 
-import com.github.gmarcg00.spotify.config.Config;
 import com.github.gmarcg00.spotify.data.AccessToken;
 import com.github.gmarcg00.spotify.exception.BadRequestException;
 import com.github.gmarcg00.spotify.external.api.Executor;
@@ -22,8 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GenerateAccessTokenIntegrationTest {
 
-    private static final String URL = "http://localhost:8080/api/token";
-
     private static WireMockServer wireMockServer;
     private AuthenticationService service;
 
@@ -31,7 +28,6 @@ class GenerateAccessTokenIntegrationTest {
     static void startWiremock(){
         wireMockServer = getServer();
         wireMockServer.start();
-        Config.ACCESS_TOKEN_PATH = URL;
     }
 
     @AfterAll

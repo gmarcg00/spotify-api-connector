@@ -1,6 +1,5 @@
 package com.github.gmarcg00.spotify.integration.album;
 
-import com.github.gmarcg00.spotify.config.Config;
 import com.github.gmarcg00.spotify.data.Album;
 import com.github.gmarcg00.spotify.exception.*;
 import com.github.gmarcg00.spotify.external.api.Executor;
@@ -21,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GetAlbumsIntegrationTest {
 
-    private static final String URL = "http://localhost:8080/albums";
-
     private static WireMockServer wireMockServer;
     private AlbumService service;
 
@@ -30,7 +27,6 @@ class GetAlbumsIntegrationTest {
     static void startWiremock(){
         wireMockServer = getServer();
         wireMockServer.start();
-        Config.ALBUMS_PATH = URL;
     }
 
     @AfterAll

@@ -1,6 +1,5 @@
 package com.github.gmarcg00.spotify.integration.track;
 
-import com.github.gmarcg00.spotify.config.Config;
 import com.github.gmarcg00.spotify.data.Track;
 import com.github.gmarcg00.spotify.exception.*;
 import com.github.gmarcg00.spotify.external.api.Executor;
@@ -21,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GetTracksIntegrationTest {
 
-    private static final String URL = "http://localhost:8080/tracks";
-
     private static WireMockServer wireMockServer;
     private TrackService service;
 
@@ -30,7 +27,6 @@ class GetTracksIntegrationTest {
     static void startWiremock(){
         wireMockServer = getServer();
         wireMockServer.start();
-        Config.TRACKS_PATH = URL;
     }
 
     @AfterAll

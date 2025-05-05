@@ -1,0 +1,8 @@
+artists: http://localhost:8080/artists
+albums: http://localhost:8080/albums
+albumsNewReleases: http://localhost:8080/browse/new-releases
+episodes: http://localhost:8080/episodes
+tracks: http://localhost:8080/tracks
+playlists: http://localhost:8080/playlists
+markets: http://localhost:8080/markets
+accessToken: http://localhost:8080/api/token
