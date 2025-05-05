@@ -20,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GetTracksIntegrationTest {
 
-    private static final String URL = "http://localhost:8080/tracks";
-
     private static WireMockServer wireMockServer;
     private TrackService service;
 

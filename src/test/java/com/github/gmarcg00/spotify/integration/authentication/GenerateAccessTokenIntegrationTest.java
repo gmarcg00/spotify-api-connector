@@ -21,8 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GenerateAccessTokenIntegrationTest {
 
-    private static final String URL = "http://localhost:8080/api/token";
-
     private static WireMockServer wireMockServer;
     private AuthenticationService service;
 
