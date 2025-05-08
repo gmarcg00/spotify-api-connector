@@ -1,6 +1,5 @@
 package com.github.gmarcg00.spotify.external.api;
 
-import com.github.gmarcg00.spotify.RequestClient;
 import com.github.gmarcg00.spotify.exception.*;
 import com.github.gmarcg00.spotify.external.api.model.exception.SpotifyApiErrorResponse;
 import com.github.gmarcg00.spotify.external.api.model.exception.SpotifyAuthErrorResponse;
@@ -9,6 +8,7 @@ import com.github.gmarcg00.spotify.utils.GlobalMapper;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
@@ -20,17 +20,19 @@ public class Executor {
     private static final String APPLICATION_URL_ENCODED = "application/x-www-form-urlencoded";
     private static final String RATE_LIMIT_EXCEPTION_MESSAGE = "Rate limit exceeded. Please try it again later.";
 
-    private final RequestClient client;
+    private final HttpClient httpClient;
+    private final GlobalMapper globalMapper;
 
     public Executor(){
-        this.client = RequestClient.getInstance();
+        this.httpClient = HttpClient.newHttpClient();
+        this.globalMapper = new GlobalMapper();
     }
 
     public <T> T get(String path, String token, Class<T> responseType) throws SpotifyApiException{
         HttpRequest request = createGetRequest(path,token);
         HttpResponse<String> response = doRequest(request,HttpResponse.BodyHandlers.ofString());
         checkResponse(response);
-        return GlobalMapper.getInstance().map(response.body(),responseType);
+        return globalMapper.map(response.body(),responseType);
     }
 
     private HttpRequest createGetRequest(String path,String token){
@@ -45,10 +47,10 @@ public class Executor {
         HttpRequest request = createPostRequest(path,body);
         HttpResponse<String> response = doRequest(request,HttpResponse.BodyHandlers.ofString());
         if(response.statusCode() == 400){
-            SpotifyAuthErrorResponse responseError = GlobalMapper.getInstance().map(response.body(),SpotifyAuthErrorResponse.class);
+            SpotifyAuthErrorResponse responseError = globalMapper.map(response.body(),SpotifyAuthErrorResponse.class);
             throw new BadRequestException(responseError.getErrorDescription());
         }
-        return GlobalMapper.getInstance().map(response.body(),responseType);
+        return globalMapper.map(response.body(),responseType);
     }
 
     private HttpRequest createPostRequest(String path, String body){
@@ -61,7 +63,7 @@ public class Executor {
 
     private HttpResponse<String> doRequest(HttpRequest request, HttpResponse.BodyHandler<String> bodyHandler){
         try {
-            return client.getClient().send(request, bodyHandler);
+            return httpClient.send(request, bodyHandler);
         } catch (IOException e) {
             throw new NetworkConnectionException(e.getMessage());
         } catch (InterruptedException e){
@@ -72,7 +74,7 @@ public class Executor {
 
     private void checkResponse(HttpResponse<String> response) throws EntityNotFoundException, UnauthorizedException, BadRequestException, RateLimitException {
         if(response.statusCode() == HttpURLConnection.HTTP_OK) return;
-        SpotifyApiErrorResponse errorResponse = GlobalMapper.getInstance().map(response.body(),SpotifyApiErrorResponse.class);
+        SpotifyApiErrorResponse errorResponse = globalMapper.map(response.body(),SpotifyApiErrorResponse.class);
         String errorMessage = errorResponse.getError().getMessage();
         switch (response.statusCode()){
             case HttpURLConnection.HTTP_UNAUTHORIZED :
