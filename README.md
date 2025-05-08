@@ -43,22 +43,4 @@ Add the dependency to your `pom.xml`:
 This library uses the **Client Credentials Flow**, which is suitable for **server-to-server authentication** only.  
 It does **not** include OAuth scopes for end-user access and therefore **cannot interact with user accounts**.
 
-### 📄 Required Configuration
-
-To function correctly, the library expects an `application.yml` file located in the `resources` directory of your project.  
-This file defines the base URLs for the Spotify API endpoints.
-
-**Example `application.yml`:**
-
-```yaml
-artists: https://api.spotify.com/v1/artists
-albums: https://api.spotify.com/v1/albums
-albumsNewReleases: https://api.spotify.com/v1/browse/new-releases
-episodes: https://api.spotify.com/v1/episodes
-tracks: https://api.spotify.com/v1/tracks
-playlists: https://api.spotify.com/v1/playlists
-markets: https://api.spotify.com/v1/markets
-accessToken: https://accounts.spotify.com/api/token
-```
-
 📚 [Browse the JavaDoc online](https://gmarcg00.github.io/spotify-api-connector/)
