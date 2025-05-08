@@ -1,25 +1,17 @@
 package com.github.gmarcg00.spotify.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.gmarcg00.spotify.exception.JsonMappingException;
 
 public class GlobalMapper {
 
-    private static GlobalMapper instance;
     private final ObjectMapper mapper;
 
-    private GlobalMapper(){
+    public GlobalMapper(){
         this.mapper = new ObjectMapper();
         configure();
-    }
-
-    public static GlobalMapper getInstance(){
-        if(instance == null){
-            instance = new GlobalMapper();
-        }
-        return instance;
     }
 
     private void configure(){
@@ -30,15 +22,7 @@ public class GlobalMapper {
         try {
             return this.mapper.readValue(json,valueType);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public <T> T map(String json, TypeReference<T> valueTypeRef) {
-        try {
-            return this.mapper.readValue(json,valueTypeRef);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new JsonMappingException(e.getMessage());
         }
     }
 }
